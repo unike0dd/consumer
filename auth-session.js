@@ -82,7 +82,7 @@ function installSessionControls(auth) {
     control.className = "firebase-session-control";
     control.dataset.uiControl = "";
     control.innerHTML =
-      '<button id="firebase-sign-out" type="button" aria-label="Sign out of Gabo Services">Sign out</button>';
+      '<button id="firebase-sign-out" type="button">Sign out</button>';
 
     const host =
       document.querySelector(".side-bottom") ||
@@ -92,15 +92,39 @@ function installSessionControls(auth) {
     host.appendChild(control);
 
     const button = control.querySelector("#firebase-sign-out");
+    let signingOut = false;
+
+    function applyLanguage() {
+      const spanish = document.documentElement.lang === "es";
+      button.textContent = signingOut
+        ? spanish
+          ? "Cerrando sesión…"
+          : "Signing out…"
+        : spanish
+          ? "Cerrar sesión"
+          : "Sign out";
+      button.setAttribute(
+        "aria-label",
+        spanish ? "Cerrar sesión de Gabo Services" : "Sign out of Gabo Services",
+      );
+    }
+
+    new MutationObserver(applyLanguage).observe(document.documentElement, {
+      attributeFilter: ["lang"],
+    });
+    applyLanguage();
+
     button.addEventListener("click", async () => {
+      signingOut = true;
       button.disabled = true;
-      button.textContent = "Signing out…";
+      applyLanguage();
       try {
         await signOut(auth);
       } catch (error) {
         console.error("Firebase sign-out failed.", error);
+        signingOut = false;
         button.disabled = false;
-        button.textContent = "Sign out";
+        applyLanguage();
         return;
       }
       redirectToSignIn();
