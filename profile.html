@@ -1,1 +1,85 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gabo Services | Profile</title><link rel="stylesheet" href="styles.css"></head><body class="theme-consumer"><main class="profile-page"><header class="profile-header"><a class="brand-dark" href="index.html">Gabo Services</a><a class="back-link" href="index.html">← Workspace</a></header><section class="profile-hero"><div><p class="eyebrow">Talent profile</p><h1>Your professional profile</h1><p>Present what you can contribute through verified capabilities—not appearance. Personal identifiers remain private from employers until a contracted onboarding process is underway.</p></div><span class="privacy-badge">Skills-first profile</span></section><section class="profile-grid"><article class="panel profile-card"><p class="eyebrow">Professional value</p><h2>Summary</h2><p>Describe the problems you solve, the value you create, and the environments where you perform best.</p></article><article class="panel profile-card"><p class="eyebrow">Evidence</p><h2>Skills & knowledge</h2><p>Add skills, tools, languages, certifications, and knowledge areas with proficiency and verification.</p></article><article class="panel profile-card"><p class="eyebrow">Career history</p><h2>Experience</h2><p>Record responsibilities, measurable outcomes, industries, and transferable experience without exposing protected personal details.</p></article><article class="panel profile-card"><p class="eyebrow">Education</p><h2>Studies</h2><p>High school, associate, undergraduate, graduate, doctorate, professional training, and continuing education.</p></article><article class="panel profile-card"><p class="eyebrow">Proof of work</p><h2>Projects</h2><p>Show relevant projects, your role, methods, outputs, and measurable results.</p></article><article class="panel profile-card"><p class="eyebrow">Additional context</p><h2>Interests & hobbies</h2><p>Optional interests that demonstrate relevant discipline, curiosity, collaboration, or applied ability.</p></article></section></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gabo Services | Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="profile.js" defer></script>
+</head>
+<body class="theme-consumer">
+  <main class="profile-page">
+    <header class="profile-header">
+      <a class="brand-dark" href="index.html">Gabo Services</a>
+      <a class="back-link" href="index.html">← Workspace</a>
+    </header>
+
+    <section class="profile-hero">
+      <div>
+        <p class="eyebrow">Talent profile</p>
+        <h1>Your professional profile</h1>
+        <p>Present what you can contribute through verified capabilities—not appearance. Personal identifiers remain private from employers until a contracted onboarding process is underway.</p>
+      </div>
+      <div class="last-updated" aria-live="polite">
+        <span>Last updated</span>
+        <time id="last-updated" datetime="">Not saved yet</time>
+      </div>
+    </section>
+
+    <section class="profile-grid" aria-label="Professional profile sections">
+      <button class="panel profile-card" type="button" data-section="summary">
+        <span class="eyebrow">Professional value</span><strong>Summary</strong>
+        <span>Describe the problems you solve, the value you create, and the environments where you perform best.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+      <button class="panel profile-card" type="button" data-section="skills">
+        <span class="eyebrow">Evidence</span><strong>Skills &amp; knowledge</strong>
+        <span>Add skills, tools, languages, certifications, and knowledge areas with proficiency and verification.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+      <button class="panel profile-card" type="button" data-section="experience">
+        <span class="eyebrow">Career history</span><strong>Experience</strong>
+        <span>Record responsibilities, measurable outcomes, industries, and transferable experience without exposing protected personal details.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+      <button class="panel profile-card" type="button" data-section="education">
+        <span class="eyebrow">Education</span><strong>Studies</strong>
+        <span>High school, associate, undergraduate, graduate, doctorate, professional training, and continuing education.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+      <button class="panel profile-card" type="button" data-section="projects">
+        <span class="eyebrow">Proof of work</span><strong>Projects</strong>
+        <span>Show relevant projects, your role, methods, outputs, and measurable results.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+      <button class="panel profile-card" type="button" data-section="interests">
+        <span class="eyebrow">Additional context</span><strong>Interests &amp; hobbies</strong>
+        <span>Optional interests that demonstrate relevant discipline, curiosity, collaboration, or applied ability.</span>
+        <small class="entry-count">No entries yet</small>
+      </button>
+    </section>
+  </main>
+
+  <dialog class="profile-dialog" id="profile-dialog" aria-labelledby="editor-title">
+    <form method="dialog" id="profile-form">
+      <header class="dialog-header">
+        <div><p class="eyebrow" id="editor-eyebrow"></p><h2 id="editor-title"></h2></div>
+        <button class="dialog-close" type="button" data-action="cancel" aria-label="Close editor">×</button>
+      </header>
+      <p class="editor-guidance" id="editor-guidance"></p>
+      <div class="entry-list" id="entry-list"></div>
+      <div class="entry-actions">
+        <button type="button" class="secondary-action" data-action="add">+ Add</button>
+        <button type="button" class="danger-action" data-action="remove">− Remove</button>
+      </div>
+      <p class="storage-note">Saved securely in this browser for the current prototype. Cloud synchronization will follow authenticated backend integration.</p>
+      <footer class="dialog-footer">
+        <button type="button" class="text-action" data-action="cancel">Cancel</button>
+        <button type="button" class="secondary-action" data-action="draft">Draft</button>
+        <button type="submit" class="primary-action">Save</button>
+      </footer>
+    </form>
+  </dialog>
+  <div class="profile-toast" id="profile-toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
