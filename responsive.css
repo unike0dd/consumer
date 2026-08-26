@@ -1,89 +1,158 @@
 /*
- * Consumer-wide adaptive layout layer.
- * Loaded after each page's own stylesheet so page identity remains isolated.
+ * Gabriel Services adaptive presentation layer
+ * Desktop/laptop: wide, evenly distributed workspace with large Google-style typography.
+ * Tablet/mobile: progressive reflow without removing content or actions.
  */
 :root{
-  --adaptive-gutter:clamp(20px,3.2vw,64px);
-  --adaptive-content-max:1760px;
-  --adaptive-font:"Google Sans","Product Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --gs-font:Arial,Roboto,"Helvetica Neue",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --gs-content-gutter:clamp(18px,3.4vw,64px);
+  --gs-section-gap:clamp(16px,2vw,28px);
+  --gs-card-padding:clamp(18px,2vw,28px);
 }
-body{font-family:var(--adaptive-font);font-size:clamp(15px,.4vw + 12px,18px)}
+html{font-family:var(--gs-font);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-width:0;overflow-x:hidden;font-family:var(--gs-font)}
+button,input,select,textarea{font-family:inherit}
+img,svg,canvas,video{max-width:100%;height:auto}
+.app,.shell,.workspace,.work,.content,.dashboard-grid,.grid,.right-stack,.right,.metrics,.panel,.welcome,.topbar,.top,.rows,.data-row,.profile-page,.profile-hero,.profile-grid{min-width:0}
 
-/* Root dashboard: use the full available desktop canvas. */
-.work .content{width:100%;max-width:var(--adaptive-content-max);padding:clamp(34px,3.2vw,64px) var(--adaptive-gutter) clamp(56px,5vw,90px)}
-.welcome{width:100%;margin-bottom:clamp(28px,2.5vw,44px)}
-.welcome>div{width:100%;max-width:none}
-.welcome>div>p:last-child{max-width:1100px;font-size:clamp(17px,.5vw + 13px,22px)}
-.welcome h1{font-size:clamp(48px,4.8vw,78px)}
-.welcome-meta{width:100%}
-.welcome-meta time{font-size:clamp(13px,.25vw + 11px,16px)}
-.metrics{grid-template-columns:repeat(4,minmax(210px,1fr));gap:clamp(16px,1.5vw,28px)}
-.metrics article{min-height:clamp(174px,13vw,220px);padding:clamp(24px,2vw,36px)}
-.metrics p{font-size:clamp(13px,.24vw + 11px,16px)}
-.metrics strong{font-size:clamp(36px,3vw,50px)}
-.metrics small{font-size:clamp(12px,.2vw + 10px,15px)}
-.panel{min-width:0}
-.heading{padding:clamp(24px,2vw,36px)}
-.heading h2{font-size:clamp(30px,2vw,40px)}
-.quick-actions{grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}
-.quick-actions a{display:grid;place-items:center;font-size:clamp(13px,.25vw + 11px,16px)}
-.grid{grid-template-columns:minmax(0,2fr) minmax(340px,.8fr);gap:clamp(20px,1.6vw,30px)}
-.rows article{min-height:clamp(86px,6vw,104px)}
-.rows article div strong{font-size:clamp(14px,.25vw + 12px,17px)}
-.rows article div small,.rows article>b{font-size:clamp(12px,.2vw + 10px,15px)}
-
-/* Profile: retain its character while distributing cards across the screen. */
-.profile-page .profile-hero,.profile-page .profile-grid{width:min(1380px,calc(100% - (2 * var(--adaptive-gutter))))}
-.profile-page .profile-hero{padding-top:clamp(42px,4.5vw,76px);padding-bottom:clamp(30px,3vw,48px)}
-.profile-page .profile-hero>div:first-child{max-width:960px}
-.profile-page h1{font-size:clamp(48px,4.5vw,74px)}
-.profile-page .profile-hero>div:first-child>p:last-child{font-size:clamp(15px,.4vw + 12px,19px)}
-.profile-page .last-updated{min-width:210px;padding:14px 18px}
-.profile-page .last-updated span{font-size:11px}
-.profile-page .last-updated time{font-size:14px}
-.profile-page .profile-grid{grid-template-columns:repeat(3,minmax(250px,1fr));gap:clamp(18px,1.6vw,28px)}
-.profile-page .profile-card{min-height:clamp(190px,15vw,250px);padding:clamp(24px,2.2vw,38px)}
-.profile-page .profile-card>strong{font-size:clamp(25px,1.7vw,34px)}
-.profile-page .profile-card>span:not(.eyebrow){font-size:clamp(14px,.28vw + 12px,17px)}
-.profile-page .entry-count{font-size:clamp(11px,.2vw + 10px,14px)}
-
-/* Wide desktop: enlarge without allowing lines or cards to become unwieldy. */
-html[data-layout="wide"] .shell{grid-template-columns:clamp(282px,18vw,340px) minmax(0,1fr)}
-html[data-layout="wide"] .side{padding-inline:clamp(26px,2vw,40px)}
-html[data-layout="wide"] .brand{font-size:clamp(34px,2.3vw,42px)}
-
-/* Laptop and tablet: balanced two-column information density. */
-@media(max-width:1180px){
-  .work .content{padding-inline:clamp(22px,3vw,38px)}
-  .metrics{grid-template-columns:repeat(2,minmax(220px,1fr))}
-  .grid{grid-template-columns:1fr}
-  .right{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .profile-page .profile-grid{grid-template-columns:repeat(2,minmax(240px,1fr))}
-}
-@media(max-width:820px){
-  body{font-size:16px}
-  .work .content{padding:34px clamp(16px,4vw,26px) 56px}
-  .welcome h1{font-size:clamp(42px,10vw,60px)}
-  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .right{grid-template-columns:1fr}
-  .profile-page .profile-hero,.profile-page .profile-grid{width:min(100% - 36px,720px)}
-  .profile-page .profile-hero{align-items:flex-start;flex-direction:column}
-  .profile-page .profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:560px){
-  :root{--adaptive-gutter:16px}
-  .metrics,.profile-page .profile-grid{grid-template-columns:1fr}
-  .metrics article{min-height:150px}
-  .quick-actions{grid-template-columns:1fr}
-  .profile-page .profile-hero,.profile-page .profile-grid{width:calc(100% - 28px)}
-  .profile-page h1{font-size:clamp(40px,12vw,52px)}
-  .profile-page .profile-card{min-height:170px}
+/* PC and wide laptop */
+@media (min-width:1280px){
+  .app{grid-template-columns:280px minmax(0,1fr)}
+  .shell{grid-template-columns:300px minmax(0,1fr)}
+  .content{width:100%;max-width:none;padding:clamp(34px,3.5vw,64px) var(--gs-content-gutter) 72px}
+  .topbar,.top{padding-inline:var(--gs-content-gutter)}
+  .welcome{gap:clamp(28px,4vw,72px);margin-bottom:30px}
+  .welcome h1{font-family:var(--gs-font);font-size:clamp(38px,3vw,54px);font-weight:600;letter-spacing:-.035em;line-height:1.08}
+  .welcome p,.welcome>div>p:last-child{max-width:880px;font-size:clamp(15px,1.1vw,18px);line-height:1.65}
+  .eyebrow{font-size:11px}
+  .metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gs-section-gap);margin-bottom:var(--gs-section-gap)}
+  .metrics article{height:100%;min-height:150px;padding:var(--gs-card-padding);align-items:flex-start}
+  .metrics span,.metrics p{font-size:12px}
+  .metrics strong{font-family:var(--gs-font);font-size:clamp(27px,2vw,36px);font-weight:600}
+  .metrics small{font-size:11px}
+  .dashboard-grid{grid-template-columns:minmax(0,2fr) minmax(340px,1fr);gap:var(--gs-section-gap)}
+  .grid{grid-template-columns:minmax(0,2fr) minmax(340px,1fr);gap:var(--gs-section-gap);margin-top:var(--gs-section-gap)}
+  .right-stack,.right{gap:var(--gs-section-gap)}
+  .panel{height:100%;padding:var(--gs-card-padding)}
+  .panel-title h2,.heading h2{font-family:var(--gs-font);font-size:clamp(18px,1.4vw,24px);font-weight:600}
+  .panel-title p,.heading p{font-size:13px}
+  .data-row,.rows article{min-height:82px;padding:17px 14px}
+  .row-main b,.rows article div strong{font-size:14px}
+  .row-main small,.rows article div small{font-size:12px}
+  .task b,.tasks label{font-size:13px}
+  .task small{font-size:11px}
+  .profile-hero,.profile-grid{width:min(1600px,calc(100% - (2 * var(--gs-content-gutter))))}
+  .profile-hero{padding:58px 0 44px}
+  .profile-hero>div:first-child{max-width:900px}
+  .profile-hero h1{font-family:var(--gs-font);font-size:clamp(48px,4vw,68px);font-weight:600}
+  .profile-hero>div:first-child>p:last-child{font-size:17px}
+  .profile-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gs-section-gap)}
+  .profile-card{min-height:220px;padding:var(--gs-card-padding)}
+  .profile-card>strong{font-family:var(--gs-font);font-size:26px;font-weight:600}
+  .profile-card>span:not(.eyebrow){font-size:14px;line-height:1.65}
+  .entry-count{font-size:12px}
 }
 
-/* Reflow safety for browser zoom from 45% through 200%. */
-@media(max-width:380px){
-  .work .content{padding-inline:12px}
-  .profile-page .profile-hero,.profile-page .profile-grid{width:calc(100% - 20px)}
+/* Standard laptop */
+@media (min-width:1024px) and (max-width:1279px){
+  .content{width:100%;max-width:none;padding:32px clamp(26px,3vw,42px) 58px}
+  .welcome h1{font-family:var(--gs-font);font-size:38px;font-weight:600}
+  .welcome p,.welcome>div>p:last-child{font-size:15px}
+  .metrics{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .metrics article{height:100%;padding:20px}
+  .dashboard-grid,.grid{grid-template-columns:minmax(0,1.7fr) minmax(290px,.8fr);gap:18px}
+  .panel{height:100%}
+  .profile-hero,.profile-grid{width:min(1120px,calc(100% - 56px))}
+  .profile-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .profile-card{min-height:190px;padding:24px}
+  .profile-card>strong{font-family:var(--gs-font);font-size:23px;font-weight:600}
+  .profile-card>span:not(.eyebrow){font-size:13px}
 }
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* Tablet */
+@media (min-width:600px) and (max-width:1023px){
+  .content{width:100%;max-width:none;padding:30px clamp(20px,4vw,34px) 56px}
+  .welcome{align-items:flex-start;flex-direction:column;gap:20px}
+  .welcome h1{font-family:var(--gs-font);font-size:clamp(34px,5vw,44px);font-weight:600}
+  .welcome p,.welcome>div>p:last-child{font-size:15px}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .metrics article{height:100%;min-height:145px;padding:21px}
+  .dashboard-grid,.grid,.right-stack,.right{grid-template-columns:1fr}
+  .panel{height:auto}
+  .data-row{grid-template-columns:minmax(0,1fr) 86px 88px 14px}
+  .profile-header{padding-inline:28px}
+  .profile-hero,.profile-grid{width:calc(100% - 56px)}
+  .profile-hero{align-items:flex-start;flex-direction:column}
+  .profile-hero h1{font-family:var(--gs-font);font-size:clamp(40px,7vw,54px);font-weight:600}
+  .profile-hero>div:first-child>p:last-child{font-size:15px}
+  .profile-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .profile-card{min-height:190px;padding:23px}
+  .profile-card>strong{font-family:var(--gs-font);font-size:23px;font-weight:600}
+  .profile-card>span:not(.eyebrow){font-size:13px}
+}
+
+/* Mobile */
+@media (max-width:599px){
+  .content{width:100%;max-width:none;padding:22px 16px 92px}
+  .topbar,.top{padding-inline:12px}
+  .welcome{align-items:stretch;flex-direction:column;gap:18px}
+  .welcome h1{font-family:var(--gs-font);font-size:clamp(31px,10vw,42px);font-weight:600;overflow-wrap:anywhere}
+  .welcome p,.welcome>div>p:last-child{font-size:15px;line-height:1.6}
+  .welcome .primary,.primary{width:100%;min-height:48px;white-space:normal;font-size:14px}
+  .metrics{grid-template-columns:1fr;gap:14px}
+  .metrics article{height:auto;min-height:132px;padding:20px}
+  .metrics span,.metrics p{font-size:12px}
+  .metrics strong{font-family:var(--gs-font);font-size:30px;font-weight:600}
+  .metrics small{font-size:11px}
+  .dashboard-grid,.grid,.right-stack,.right{grid-template-columns:1fr;gap:15px}
+  .panel{height:auto;padding:18px}
+  .panel-title,.heading{align-items:flex-start;flex-wrap:wrap}
+  .panel-title h2,.heading h2{font-family:var(--gs-font);font-size:20px;font-weight:600}
+  .data-row,.rows article{grid-template-columns:minmax(0,1fr);gap:8px;min-height:0;padding:16px 10px}
+  .data-row>strong,.data-row>em,.data-row>.status,.rows article>b,.rows article>em{display:block;justify-self:start;text-align:left}
+  .row-main b,.rows article div strong{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:14px}
+  .row-main small,.rows article div small{font-size:12px}
+  .role-tabs{width:100%;max-width:100%;overflow-x:auto}
+  .ui-preferences{position:static;margin-left:auto}
+  .profile-header{padding-inline:18px}
+  .profile-hero,.profile-grid{width:calc(100% - 32px)}
+  .profile-hero{padding:34px 0 26px}
+  .profile-hero h1{font-family:var(--gs-font);font-size:clamp(36px,11vw,48px);font-weight:600}
+  .profile-hero>div:first-child>p:last-child{font-size:15px}
+  .profile-grid{grid-template-columns:1fr;gap:15px}
+  .profile-card{min-height:175px;padding:22px}
+  .profile-card>strong{font-family:var(--gs-font);font-size:23px;font-weight:600}
+  .profile-card>span:not(.eyebrow){font-size:13px;line-height:1.6}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* PR #8 retained wide-screen refinements, reconciled after PR #9. */
+@media (min-width:1440px){
+  .shell{grid-template-columns:clamp(300px,18vw,340px) minmax(0,1fr)}
+  .side{padding-inline:clamp(26px,2vw,40px)}
+  .brand{font-size:clamp(34px,2.3vw,42px)}
+  .work .content{max-width:1760px;margin-inline:auto;padding:clamp(42px,3.6vw,68px) clamp(32px,3.4vw,68px) clamp(68px,5vw,96px)}
+  .welcome{width:100%;margin-bottom:clamp(32px,2.5vw,46px)}
+  .welcome>div{width:100%;max-width:none}
+  .welcome>div>p:last-child{max-width:1100px;font-size:clamp(18px,.5vw + 13px,22px)}
+  .welcome h1{font-size:clamp(54px,4.4vw,78px)}
+  .welcome-meta{width:100%}
+  .welcome-meta time{font-size:clamp(14px,.25vw + 11px,16px)}
+  .metrics{gap:clamp(18px,1.5vw,28px)}
+  .metrics article{min-height:clamp(180px,12vw,220px);padding:clamp(26px,2vw,36px)}
+  .metrics p{font-size:clamp(13px,.24vw + 11px,16px)}
+  .metrics strong{font-size:clamp(36px,3vw,50px)}
+  .metrics small{font-size:clamp(12px,.2vw + 10px,15px)}
+  .heading{padding:clamp(26px,2vw,36px)}
+  .heading h2{font-size:clamp(30px,2vw,40px)}
+  .quick-actions{grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}
+  .quick-actions a{display:grid;place-items:center;font-size:clamp(14px,.25vw + 11px,16px)}
+  .rows article{min-height:clamp(88px,6vw,104px)}
+  .rows article div strong{font-size:clamp(15px,.25vw + 12px,17px)}
+  .rows article div small,.rows article>b{font-size:clamp(12px,.2vw + 10px,15px)}
+  .profile-page .profile-hero,.profile-page .profile-grid{width:min(1500px,calc(100% - (2 * var(--gs-content-gutter))))}
+  .profile-page .profile-hero>div:first-child{max-width:960px}
+  .profile-page .profile-card{min-height:clamp(220px,15vw,260px);padding:clamp(28px,2.2vw,40px)}
+  .profile-page .profile-card>strong{font-size:clamp(27px,1.7vw,36px)}
+  .profile-page .profile-card>span:not(.eyebrow){font-size:clamp(14px,.28vw + 12px,17px)}
+}
