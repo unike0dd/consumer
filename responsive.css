@@ -252,3 +252,92 @@ img,svg,canvas,video{max-width:100%;height:auto}
 @media(prefers-reduced-motion:reduce){
   .shell,.side,.sidebar-toggle{transition:none}
 }
+
+
+/* Compact navigation and Jobs accordion */
+.primary-nav{
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  gap:8px;
+  margin-top:28px;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#ffffff38 transparent;
+}
+.primary-nav .nav{min-height:48px;text-decoration:none}
+.nav-mark{
+  flex:0 0 auto;
+  width:8px;
+  height:8px;
+  margin-inline:8px 6px;
+  border-radius:50%;
+  background:#f2c96f;
+}
+.jobs-accordion{border-radius:12px}
+.jobs-accordion summary{list-style:none}
+.jobs-accordion summary::-webkit-details-marker{display:none}
+.jobs-accordion summary>span:nth-child(2){flex:1}
+.accordion-chevron{
+  width:9px;
+  height:9px;
+  margin-left:auto;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  transform:rotate(45deg);
+  transition:transform .2s ease;
+}
+.jobs-accordion[open] summary{background:#ffffff0f}
+.jobs-accordion[open] .accordion-chevron{transform:rotate(225deg)}
+.jobs-submenu{
+  display:grid;
+  gap:3px;
+  margin:5px 0 8px 38px;
+  padding-left:14px;
+  border-left:1px solid #ffffff30;
+}
+.jobs-submenu a{
+  padding:9px 10px;
+  border-radius:8px;
+  color:#bdd1ca;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.25;
+  text-decoration:none;
+}
+.jobs-submenu a:hover,.jobs-submenu a:focus-visible{
+  background:#ffffff10;
+  color:white;
+}
+.jobs-submenu a:focus-visible,.primary-nav .nav:focus-visible{
+  outline:2px solid #f2c96f;
+  outline-offset:2px;
+}
+.nav-group{
+  display:grid;
+  gap:8px;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid #ffffff1f;
+}
+.side-bottom{
+  flex:0 0 auto;
+  margin-top:20px;
+  padding:18px 4px 0;
+  border-top:1px solid #ffffff2b;
+}
+.side-bottom .gabo-session-controls,.side-bottom .gabo-logout{width:100%}
+.side-bottom .gabo-session-user{display:none}
+.side-bottom .gabo-logout{
+  min-height:46px;
+  border-color:#ffffff52;
+  color:white;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+@media(max-width:820px){
+  .primary-nav{display:flex!important;overflow-y:auto!important}
+  .primary-nav .nav{width:100%;font-size:14px}
+  .side-bottom{display:block}
+}
