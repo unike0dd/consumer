@@ -1,0 +1,222 @@
+const DB_NAME = "gabo-consumer-profile";
+const DB_VERSION = 1;
+const STORE = "sections";
+
+const sectionConfig = {
+  summary: {
+    eyebrow: "Professional value", title: "Summary",
+    guidance: "Describe your professional focus, the business problems you solve, the people you support, and the measurable value you create.",
+    name: "Professional value title", nameHint: "Use a concise professional headline or area of contribution.",
+    description: "Professional value explanation", descriptionHint: "Explain your contribution, scope, approach, and the results an employer can expect."
+  },
+  skills: {
+    eyebrow: "Evidence", title: "Skills & knowledge",
+    guidance: "Add one capability per entry. State what you can do, how you apply it, and the evidence that supports your proficiency.",
+    name: "Skill or knowledge area", nameHint: "Enter a recognized skill, tool, language, method, or knowledge discipline.",
+    description: "Application and evidence", descriptionHint: "Explain how you apply this capability, the responsibilities involved, and any measurable or verifiable outcomes."
+  },
+  experience: {
+    eyebrow: "Career history", title: "Experience",
+    guidance: "Focus on responsibility, scope, contribution, and measurable outcomes. Exclude protected personal information.",
+    name: "Role or experience area", nameHint: "Enter a role, function, assignment, or transferable experience area.",
+    description: "Responsibilities and outcomes", descriptionHint: "Summarize what you were responsible for, how you performed the work, and the results you achieved."
+  },
+  education: {
+    eyebrow: "Education", title: "Studies",
+    guidance: "Add formal education, professional training, or continuing studies that support your qualifications.",
+    name: "Program or field of study", nameHint: "Enter the program, discipline, qualification, or training subject.",
+    description: "Study details", descriptionHint: "Describe the focus, relevant coursework, completed work, distinction, or practical knowledge gained."
+  },
+  projects: {
+    eyebrow: "Proof of work", title: "Projects",
+    guidance: "Show evidence of applied ability. Explain the objective, your role, the methods or tools used, and the outcome.",
+    name: "Project name or objective", nameHint: "Enter a concise project title or the objective it addressed.",
+    description: "Project contribution and results", descriptionHint: "Describe the challenge, your contribution, the process or tools used, and measurable or demonstrable results."
+  },
+  interests: {
+    eyebrow: "Additional context", title: "Interests & hobbies",
+    guidance: "Include only optional activities that demonstrate relevant curiosity, discipline, collaboration, creativity, or applied ability.",
+    name: "Interest or activity", nameHint: "Enter a relevant interest, practice, volunteer activity, or hobby.",
+    description: "Professional relevance", descriptionHint: "Explain what you practice or learn and how it strengthens relevant professional qualities."
+  }
+};
+
+const proficiencyOptions = ["Not specified", "Foundational", "Amateur", "Junior", "Intermediate", "Mid-level", "Advanced", "Senior", "Expert", "Engineer / Specialist"];
+const evidenceOptions = ["Not specified", "Self-declared", "Work experience", "Verified portfolio", "Professional certification", "License", "Degree or diploma", "Course", "Seminar", "Workshop", "Assessment verified"];
+
+const dialog = document.querySelector("#profile-dialog");
+const form = document.querySelector("#profile-form");
+const list = document.querySelector("#entry-list");
+const toast = document.querySelector("#profile-toast");
+let activeSection = "";
+let workingEntries = [];
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "section" });
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function readAll() {
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(STORE, "readonly").objectStore(STORE).getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function writeSection(section, entries, status) {
+  const db = await openDatabase();
+  const updatedAt = new Date().toISOString();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    transaction.objectStore(STORE).put({ section, entries, status, updatedAt });
+    transaction.oncomplete = () => resolve(updatedAt);
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+const optionMarkup = (options, selected) => options.map(value =>
+  `<option value="${value}" ${value === selected ? "selected" : ""}>${value}</option>`
+).join("");
+
+function entryMarkup(entry = {}) {
+  const config = sectionConfig[activeSection];
+  return `<fieldset class="profile-entry">
+    <legend>Entry <span></span></legend>
+    <label>${config.name}
+      <input name="name" maxlength="150" value="${escapeHtml(entry.name || "")}" placeholder="${config.nameHint}" required>
+      <small><span data-count="name">${(entry.name || "").length}</span>/150 characters</small>
+    </label>
+    <label>${config.description}
+      <textarea name="description" maxlength="600" rows="6" placeholder="${config.descriptionHint}" required>${escapeHtml(entry.description || "")}</textarea>
+      <small><span data-count="description">${(entry.description || "").length}</span>/600 characters</small>
+    </label>
+    <div class="select-grid">
+      <label>Proficiency level<select name="proficiency">${optionMarkup(proficiencyOptions, entry.proficiency || "Not specified")}</select></label>
+      <label>Evidence or verification<select name="evidence">${optionMarkup(evidenceOptions, entry.evidence || "Not specified")}</select></label>
+    </div>
+  </fieldset>`;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[character]);
+}
+
+function renumberEntries() {
+  [...list.querySelectorAll(".profile-entry")].forEach((entry, index) => {
+    entry.querySelector("legend span").textContent = index + 1;
+  });
+  form.querySelector('[data-action="remove"]').disabled = list.children.length <= 1;
+}
+
+function bindCounters(root = list) {
+  root.querySelectorAll("input[maxlength],textarea[maxlength]").forEach(field => {
+    field.addEventListener("input", () => {
+      field.closest("label").querySelector("[data-count]").textContent = field.value.length;
+    });
+  });
+}
+
+function collectEntries() {
+  return [...list.querySelectorAll(".profile-entry")].map(entry => ({
+    name: entry.querySelector('[name="name"]').value.trim(),
+    description: entry.querySelector('[name="description"]').value.trim(),
+    proficiency: entry.querySelector('[name="proficiency"]').value,
+    evidence: entry.querySelector('[name="evidence"]').value
+  })).filter(entry => entry.name || entry.description);
+}
+
+async function openEditor(section) {
+  activeSection = section;
+  const config = sectionConfig[section];
+  const records = await readAll();
+  const record = records.find(item => item.section === section);
+  workingEntries = record?.entries?.length ? record.entries : [{}];
+  document.querySelector("#editor-eyebrow").textContent = config.eyebrow;
+  document.querySelector("#editor-title").textContent = config.title;
+  document.querySelector("#editor-guidance").textContent = config.guidance;
+  list.innerHTML = workingEntries.map(entryMarkup).join("");
+  bindCounters();
+  renumberEntries();
+  dialog.showModal();
+  list.querySelector("input")?.focus();
+}
+
+function closeEditor() {
+  dialog.close();
+  activeSection = "";
+  workingEntries = [];
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.hidden = false;
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => { toast.hidden = true; }, 3200);
+}
+
+function formatUpdated(value) {
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+}
+
+async function refreshSummary() {
+  const records = await readAll();
+  document.querySelectorAll(".profile-card").forEach(card => {
+    const record = records.find(item => item.section === card.dataset.section);
+    const count = record?.entries?.length || 0;
+    const status = record?.status === "draft" ? " · Draft" : "";
+    card.querySelector(".entry-count").textContent = count ? `${count} ${count === 1 ? "entry" : "entries"}${status}` : "No entries yet";
+  });
+  const newest = records.map(record => record.updatedAt).filter(Boolean).sort().at(-1);
+  const output = document.querySelector("#last-updated");
+  output.textContent = newest ? formatUpdated(newest) : "Not saved yet";
+  output.dateTime = newest || "";
+}
+
+document.querySelectorAll(".profile-card").forEach(card => {
+  card.addEventListener("click", () => openEditor(card.dataset.section).catch(() => showToast("The profile editor could not be opened.")));
+});
+
+form.addEventListener("click", event => {
+  const action = event.target.dataset.action;
+  if (action === "cancel") closeEditor();
+  if (action === "add") {
+    list.insertAdjacentHTML("beforeend", entryMarkup());
+    bindCounters(list.lastElementChild);
+    renumberEntries();
+    list.lastElementChild.querySelector("input").focus();
+  }
+  if (action === "remove" && list.children.length > 1) {
+    list.lastElementChild.remove();
+    renumberEntries();
+  }
+  if (action === "draft") {
+    const entries = collectEntries();
+    writeSection(activeSection, entries, "draft").then(() => {
+      closeEditor(); refreshSummary(); showToast("Draft saved in this browser.");
+    }).catch(() => showToast("The draft could not be saved."));
+  }
+});
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  const entries = collectEntries();
+  writeSection(activeSection, entries, "saved").then(() => {
+    closeEditor(); refreshSummary(); showToast("Profile section saved.");
+  }).catch(() => showToast("The profile section could not be saved."));
+});
+
+dialog.addEventListener("click", event => {
+  if (event.target === dialog) closeEditor();
+});
+
+refreshSummary().catch(() => showToast("Saved profile information is temporarily unavailable."));
