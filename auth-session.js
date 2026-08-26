@@ -1,18 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAK9lu94kkE6xH9e7qK6RXibFWJqCUvArM",
-  authDomain: "gabo-service.firebaseapp.com",
-  projectId: "gabo-service",
-  storageBucket: "gabo-service.firebasestorage.app",
-  messagingSenderId: "397025942439",
-  appId: "1:397025942439:web:4cc0abc537ca63e0213482",
-};
 
 const allowedDashboards = new Set([
   "freelance",
@@ -30,113 +21,76 @@ const authUrl = new URL(
 authUrl.searchParams.set("dashboard", dashboardKey);
 authUrl.searchParams.set("mode", "signin");
 
-function redirectToSignIn() {
+function redirectToSignIn(reason) {
+  if (reason) authUrl.searchParams.set("reason", reason);
   window.location.replace(authUrl.toString());
 }
 
-function whenDocumentReady(callback) {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", callback, { once: true });
-    return;
-  }
-  callback();
-}
-
 function installSessionControls(auth) {
-  whenDocumentReady(() => {
-    if (document.querySelector("#firebase-sign-out")) return;
+  if (document.querySelector("#firebase-sign-out")) return;
 
-    const style = document.createElement("style");
-    style.textContent = `
-      .firebase-session-control {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin: 10px 8px 0;
-      }
-      .firebase-session-control button {
-        width: 100%;
-        min-height: 42px;
-        border: 1px solid rgba(255, 255, 255, .22);
-        border-radius: 9px;
-        background: rgba(255, 255, 255, .08);
-        color: #fff;
-        font: 700 12px/1 system-ui, sans-serif;
-        cursor: pointer;
-      }
-      .firebase-session-control button:hover {
-        background: rgba(255, 255, 255, .15);
-      }
-      .firebase-session-control button:focus-visible {
-        outline: 3px solid #d6a13c;
-        outline-offset: 2px;
-      }
-      .firebase-session-control button:disabled {
-        cursor: wait;
-        opacity: .65;
-      }
-    `;
-    document.head.appendChild(style);
+  const style = document.createElement("style");
+  style.textContent = `
+    .firebase-session-control{display:flex;align-items:center;gap:8px;margin:10px 8px 0}
+    .firebase-session-control button{width:100%;min-height:42px;border:1px solid rgba(255,255,255,.22);border-radius:9px;background:rgba(255,255,255,.08);color:#fff;font:700 12px/1 system-ui,sans-serif;cursor:pointer}
+    .firebase-session-control button:hover{background:rgba(255,255,255,.15)}
+    .firebase-session-control button:focus-visible{outline:3px solid #d6a13c;outline-offset:2px}
+    .firebase-session-control button:disabled{cursor:wait;opacity:.65}
+  `;
+  document.head.appendChild(style);
 
-    const control = document.createElement("div");
-    control.className = "firebase-session-control";
-    control.dataset.uiControl = "";
-    control.innerHTML =
-      '<button id="firebase-sign-out" type="button">Sign out</button>';
+  const control = document.createElement("div");
+  control.className = "firebase-session-control";
+  control.dataset.uiControl = "";
+  control.innerHTML = '<button id="firebase-sign-out" type="button">Sign out</button>';
 
-    const host =
-      document.querySelector(".side-bottom") ||
-      document.querySelector(".side") ||
-      document.querySelector("aside") ||
-      document.body;
-    host.appendChild(control);
+  const host =
+    document.querySelector(".side-bottom") ||
+    document.querySelector(".side") ||
+    document.querySelector("aside") ||
+    document.body;
+  host.appendChild(control);
 
-    const button = control.querySelector("#firebase-sign-out");
-    let signingOut = false;
+  const button = control.querySelector("#firebase-sign-out");
+  let signingOut = false;
+  const applyLanguage = () => {
+    const spanish = document.documentElement.lang === "es";
+    button.textContent = signingOut
+      ? spanish ? "Cerrando sesión…" : "Signing out…"
+      : spanish ? "Cerrar sesión" : "Sign out";
+    button.setAttribute(
+      "aria-label",
+      spanish ? "Cerrar sesión de Gabo Services" : "Sign out of Gabo Services",
+    );
+  };
 
-    function applyLanguage() {
-      const spanish = document.documentElement.lang === "es";
-      button.textContent = signingOut
-        ? spanish
-          ? "Cerrando sesión…"
-          : "Signing out…"
-        : spanish
-          ? "Cerrar sesión"
-          : "Sign out";
-      button.setAttribute(
-        "aria-label",
-        spanish ? "Cerrar sesión de Gabo Services" : "Sign out of Gabo Services",
-      );
-    }
+  new MutationObserver(applyLanguage).observe(document.documentElement, {
+    attributeFilter: ["lang"],
+  });
+  applyLanguage();
 
-    new MutationObserver(applyLanguage).observe(document.documentElement, {
-      attributeFilter: ["lang"],
-    });
+  button.addEventListener("click", async () => {
+    signingOut = true;
+    button.disabled = true;
     applyLanguage();
-
-    button.addEventListener("click", async () => {
-      signingOut = true;
-      button.disabled = true;
-      applyLanguage();
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error("Firebase sign-out failed.", error);
-        signingOut = false;
-        button.disabled = false;
-        applyLanguage();
-        return;
-      }
+    try {
+      await signOut(auth);
       redirectToSignIn();
-    });
+    } catch (error) {
+      console.error("Firebase sign-out failed.", error);
+      signingOut = false;
+      button.disabled = false;
+      applyLanguage();
+    }
   });
 }
 
 let auth;
 try {
-  auth = getAuth(initializeApp(firebaseConfig));
+  auth = getAuth(getApp());
 } catch (error) {
-  console.error("Firebase session initialization failed.", error);
+  console.error("Shared Firebase initialization is unavailable.", error);
+  redirectToSignIn("configuration");
 }
 
 if (auth) {
@@ -151,7 +105,7 @@ if (auth) {
             console.error("Invalid Firebase session cleanup failed.", error);
           }
         }
-        redirectToSignIn();
+        redirectToSignIn("verification");
         return;
       }
 
@@ -160,7 +114,7 @@ if (auth) {
     },
     (error) => {
       console.error("Firebase session verification failed.", error);
-      redirectToSignIn();
+      redirectToSignIn("session");
     },
   );
 }
