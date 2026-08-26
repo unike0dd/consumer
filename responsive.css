@@ -125,3 +125,34 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .profile-card>span:not(.eyebrow){font-size:13px;line-height:1.6}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* PR #8 retained wide-screen refinements, reconciled after PR #9. */
+@media (min-width:1440px){
+  .shell{grid-template-columns:clamp(300px,18vw,340px) minmax(0,1fr)}
+  .side{padding-inline:clamp(26px,2vw,40px)}
+  .brand{font-size:clamp(34px,2.3vw,42px)}
+  .work .content{max-width:1760px;margin-inline:auto;padding:clamp(42px,3.6vw,68px) clamp(32px,3.4vw,68px) clamp(68px,5vw,96px)}
+  .welcome{width:100%;margin-bottom:clamp(32px,2.5vw,46px)}
+  .welcome>div{width:100%;max-width:none}
+  .welcome>div>p:last-child{max-width:1100px;font-size:clamp(18px,.5vw + 13px,22px)}
+  .welcome h1{font-size:clamp(54px,4.4vw,78px)}
+  .welcome-meta{width:100%}
+  .welcome-meta time{font-size:clamp(14px,.25vw + 11px,16px)}
+  .metrics{gap:clamp(18px,1.5vw,28px)}
+  .metrics article{min-height:clamp(180px,12vw,220px);padding:clamp(26px,2vw,36px)}
+  .metrics p{font-size:clamp(13px,.24vw + 11px,16px)}
+  .metrics strong{font-size:clamp(36px,3vw,50px)}
+  .metrics small{font-size:clamp(12px,.2vw + 10px,15px)}
+  .heading{padding:clamp(26px,2vw,36px)}
+  .heading h2{font-size:clamp(30px,2vw,40px)}
+  .quick-actions{grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}
+  .quick-actions a{display:grid;place-items:center;font-size:clamp(14px,.25vw + 11px,16px)}
+  .rows article{min-height:clamp(88px,6vw,104px)}
+  .rows article div strong{font-size:clamp(15px,.25vw + 12px,17px)}
+  .rows article div small,.rows article>b{font-size:clamp(12px,.2vw + 10px,15px)}
+  .profile-page .profile-hero,.profile-page .profile-grid{width:min(1500px,calc(100% - (2 * var(--gs-content-gutter))))}
+  .profile-page .profile-hero>div:first-child{max-width:960px}
+  .profile-page .profile-card{min-height:clamp(220px,15vw,260px);padding:clamp(28px,2.2vw,40px)}
+  .profile-page .profile-card>strong{font-size:clamp(27px,1.7vw,36px)}
+  .profile-page .profile-card>span:not(.eyebrow){font-size:clamp(14px,.28vw + 12px,17px)}
+}
