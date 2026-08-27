@@ -53,14 +53,41 @@ jobs:
             exit 1
           fi
 
+          identity_request() {
+            local endpoint="$1"
+            local payload="$2"
+            local response_file
+            local http_status
+            local error_status
+            local error_message
+
+            response_file="$(mktemp)"
+            if ! http_status="$(curl --silent --show-error \
+              --output "${response_file}" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header "Authorization: Bearer ${GOOGLE_ACCESS_TOKEN}" \
+              --header "Content-Type: application/json" \
+              --header "X-Goog-User-Project: ${FIREBASE_PROJECT_ID}" \
+              --data "${payload}" \
+              "https://identitytoolkit.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/${endpoint}")"; then
+              echo "Identity Platform could not be reached." >&2
+              return 1
+            fi
+
+            if [[ "${http_status}" != "200" ]]; then
+              error_status="$(jq -r '.error.status // "UNKNOWN"' "${response_file}" 2>/dev/null || printf 'UNKNOWN')"
+              error_message="$(jq -r '.error.message // "No diagnostic message returned."' "${response_file}" 2>/dev/null || printf 'No diagnostic message returned.')"
+              echo "Identity Platform request failed (HTTP ${http_status}, ${error_status}): ${error_message}" >&2
+              return 1
+            fi
+
+            cat "${response_file}"
+          }
+
           normalized_email="$(printf '%s' "${EXPECTED_EMAIL}" | tr '[:upper:]' '[:lower:]')"
           lookup_payload="$(jq -cn --arg uid "${FIREBASE_UID}" '{localId:[$uid]}')"
-          lookup_response="$(curl --fail-with-body --silent --show-error \
-            --request POST \
-            --header "Authorization: Bearer ${GOOGLE_ACCESS_TOKEN}" \
-            --header "Content-Type: application/json" \
-            --data "${lookup_payload}" \
-            "https://identitytoolkit.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/accounts:lookup")"
+          lookup_response="$(identity_request "accounts:lookup" "${lookup_payload}")"
 
           user_count="$(jq '.users | length' <<<"${lookup_response}")"
           if [[ "${user_count}" -ne 1 ]]; then
@@ -93,12 +120,6 @@ jobs:
             --arg claims "${merged_claims}" \
             '{localId:$uid,customAttributes:$claims}')"
 
-          curl --fail-with-body --silent --show-error \
-            --request POST \
-            --header "Authorization: Bearer ${GOOGLE_ACCESS_TOKEN}" \
-            --header "Content-Type: application/json" \
-            --data "${update_payload}" \
-            "https://identitytoolkit.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/accounts:update" \
-            >/dev/null
+          identity_request "accounts:update" "${update_payload}" >/dev/null
 
           echo "PASS: verified Consumer account activated for the exact Firebase UID."
