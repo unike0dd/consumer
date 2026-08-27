@@ -328,14 +328,22 @@ img,svg,canvas,video{max-width:100%;height:auto}
 }
 .side-bottom .gabo-session-controls,.side-bottom .gabo-logout{width:100%}
 .side-bottom .gabo-session-user{display:none}
-.side-bottom .gabo-logout{
+.side-bottom .gabo-logout,.logout-link{
+  display:grid;
+  place-items:center;
+  width:100%;
   min-height:46px;
+  border:1px solid #ffffff52;
+  border-radius:10px;
+  background:transparent;
   border-color:#ffffff52;
   color:white;
   font-weight:800;
   letter-spacing:.08em;
+  text-decoration:none;
   text-transform:uppercase;
 }
+.logout-link:hover,.logout-link:focus-visible{background:#ffffff12;outline:2px solid #f2c96f;outline-offset:2px}
 @media(max-width:820px){
   .primary-nav{display:flex!important;overflow-y:auto!important}
   .primary-nav .nav{width:100%;font-size:14px}
