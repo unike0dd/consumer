@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gabo Services | Settings</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script src="script.js?v=1" defer></script>
+</head>
+<body>
+  <main class="settings-page">
+    <header class="settings-header">
+      <a class="brand" href="../">Gabo Services</a>
+      <a class="back-link" href="../">← Workspace</a>
+    </header>
+
+    <section class="settings-hero">
+      <p class="eyebrow">Account controls</p>
+      <h1>Settings</h1>
+      <p>Manage account recovery and decide which parts of your professional identity recruiters may view.</p>
+      <aside class="prototype-note">Visual MVP: use demonstration information only. Secure account changes activate when authenticated services are reconnected.</aside>
+    </section>
+
+    <form class="settings-layout" id="settings-form">
+      <section class="settings-panel" aria-labelledby="security-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Account access</p><h2 id="security-title">Security &amp; recovery</h2></div>
+          <span class="status-badge">Backend pending</span>
+        </div>
+
+        <div class="setting-row">
+          <div><h3>Password Reset</h3><p>Request a secure password-reset email for the verified account.</p></div>
+          <button class="secondary-button secure-action" type="button" data-feature="Password reset">Request reset</button>
+        </div>
+        <div class="setting-row">
+          <div><h3>MFA</h3><p>Add a second verification factor before sensitive account actions.</p></div>
+          <button class="secondary-button secure-action" type="button" data-feature="MFA setup">Set up MFA</button>
+        </div>
+        <label class="field-row">
+          <span><strong>Phone Number</strong><small>For account recovery and MFA after verification.</small></span>
+          <input type="tel" name="phone" autocomplete="tel" placeholder="Demonstration value only">
+        </label>
+        <label class="field-row">
+          <span><strong>Alternate Email Recovery</strong><small>Must be verified before it can recover the account.</small></span>
+          <input type="email" name="recoveryEmail" autocomplete="email" placeholder="Demonstration value only">
+        </label>
+        <div class="field-row username-row">
+          <label for="username"><strong>User Name</strong><small>A private sign-in alias that will replace displaying the email address.</small></label>
+          <div class="inline-control"><input id="username" name="username" pattern="[A-Za-z0-9._-]{4,32}" maxlength="32" placeholder="4–32 letters, numbers, dots, _ or -"><button class="secondary-button" id="change-username" type="button">Change</button></div>
+        </div>
+      </section>
+
+      <section class="settings-panel" aria-labelledby="visibility-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Privacy &amp; consent</p><h2 id="visibility-title">Recruiter visibility</h2></div>
+          <span class="status-badge private">Private by default</span>
+        </div>
+        <p class="visibility-intro">Your basic recruiter profile shows only your first name and achievement titles. Each additional section requires your permission.</p>
+
+        <label class="toggle-row">
+          <span><strong>Allow recruiters to view Resume</strong><small>Share the professional résumé generated from approved Profile sections.</small></span>
+          <input type="checkbox" name="shareResume"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
+        </label>
+        <label class="toggle-row">
+          <span><strong>Allow recruiters to view Location</strong><small>Share only the location precision you approve.</small></span>
+          <input type="checkbox" name="shareLocation"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
+        </label>
+        <label class="toggle-row">
+          <span><strong>Allow recruiters to view Contact</strong><small>Share approved contact details only after explicit consent.</small></span>
+          <input type="checkbox" name="shareContact"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
+        </label>
+        <label class="toggle-row">
+          <span><strong>Allow recruiters to view your Picture</strong><small>Your photograph remains hidden unless you turn this permission on.</small></span>
+          <input type="checkbox" name="sharePicture"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
+        </label>
+      </section>
+
+      <footer class="settings-actions">
+        <p>Prototype preferences are stored only in this browser.</p>
+        <button class="primary-button" type="submit">Save settings</button>
+      </footer>
+    </form>
+  </main>
+  <div class="toast" id="settings-toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
