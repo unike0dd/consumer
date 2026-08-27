@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tasks | Gabo Services</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="../responsive.css?v=3">
+</head>
+<body>
+  <main class="task-page">
+    <header class="task-header"><a class="brand" href="../">Gabo Services</a><a class="back-link" href="../">Back to workspace</a></header>
+    <section class="task-hero">
+      <p class="eyebrow">Task</p><h1>Your career tasks</h1>
+      <p>Review opportunities, manage alerts, follow every application, and prepare for scheduled interviews in one place.</p>
+    </section>
+    <nav class="section-nav" aria-label="Task sections"><a href="#jobs">Jobs</a><a href="#saved">Saved Jobs</a><a href="#tracker">Jobs Tracker</a><a href="#interviews">Interviews</a></nav>
+    <div class="task-grid">
+      <section class="task-card task-card-wide" id="jobs">
+        <div class="card-heading"><div><p class="eyebrow">Market availability</p><h2>Jobs</h2></div><span>3 available</span></div>
+        <div class="job-list">
+          <article><div><strong>Operations Coordinator</strong><small>Casa Verde Market · Hybrid</small></div><button class="alert-button" type="button" data-alert="market-operations" aria-pressed="false"><span aria-hidden="true">✉</span><span>Email alert</span></button></article>
+          <article><div><strong>Customer Support Specialist</strong><small>Norte Studio · Remote</small></div><button class="alert-button" type="button" data-alert="market-support" aria-pressed="false"><span aria-hidden="true">✉</span><span>Email alert</span></button></article>
+          <article><div><strong>Virtual Assistant</strong><small>Sol &amp; Mar · Remote</small></div><button class="alert-button" type="button" data-alert="market-assistant" aria-pressed="false"><span aria-hidden="true">✉</span><span>Email alert</span></button></article>
+        </div>
+      </section>
+      <section class="task-card" id="saved">
+        <div class="card-heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div></div>
+        <article class="saved-job"><div><strong>HR Coordinator</strong><small>Andina Collective</small></div><button class="alert-button" type="button" data-alert="saved-hr" aria-pressed="false"><span aria-hidden="true">✉</span><span>Add job alert</span></button></article>
+      </section>
+      <section class="task-card" id="tracker">
+        <div class="card-heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div></div>
+        <ol class="tracker-list"><li><span>Operations Coordinator</span><b>Interview scheduled</b></li><li><span>Customer Support Specialist</span><b>Under review</b></li><li><span>Virtual Assistant</span><b>Applied</b></li></ol>
+      </section>
+      <section class="task-card task-card-wide" id="interviews">
+        <div class="card-heading"><div><p class="eyebrow">Calendar</p><h2>Interviews</h2></div><a href="../#top">Dashboard tasks</a></div>
+        <div class="interview-list"><article><time datetime="2026-09-01T10:00"><span>SEP</span><strong>01</strong></time><div><strong>Operations Coordinator</strong><small>Casa Verde Market</small></div><p><b>Tuesday</b><span>10:00 AM</span></p></article></div>
+      </section>
+    </div>
+    <div class="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+  <script src="script.js?v=1" defer></script>
+</body>
+</html>
