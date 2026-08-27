@@ -13,7 +13,8 @@ const sectionConfig = {
     eyebrow: "Evidence", title: "Skills & knowledge",
     guidance: "Add one capability per entry. State what you can do, how you apply it, and the evidence that supports your proficiency.",
     name: "Skill or knowledge area", nameHint: "Enter a recognized skill, tool, language, method, or knowledge discipline.",
-    description: "Application and evidence", descriptionHint: "Explain how you apply this capability, the responsibilities involved, and any measurable or verifiable outcomes."
+    description: "Application and evidence", descriptionHint: "Explain how you apply this capability, the responsibilities involved, and any measurable or verifiable outcomes.",
+    supportsUrl: true, urlLabel: "Supporting URL", urlHint: "Add a professional portfolio, credential, publication, or verification link."
   },
   experience: {
     eyebrow: "Career history", title: "Experience",
@@ -25,13 +26,15 @@ const sectionConfig = {
     eyebrow: "Education", title: "Studies",
     guidance: "Add formal education, professional training, or continuing studies that support your qualifications.",
     name: "Program or field of study", nameHint: "Enter the program, discipline, qualification, or training subject.",
-    description: "Study details", descriptionHint: "Describe the focus, relevant coursework, completed work, distinction, or practical knowledge gained."
+    description: "Study details", descriptionHint: "Describe the focus, relevant coursework, completed work, distinction, or practical knowledge gained.",
+    supportsUrl: true, urlLabel: "Education URL", urlHint: "Add an institution, program, credential, transcript, or verification link."
   },
   projects: {
     eyebrow: "Proof of work", title: "Projects",
     guidance: "Show evidence of applied ability. Explain the objective, your role, the methods or tools used, and the outcome.",
     name: "Project name or objective", nameHint: "Enter a concise project title or the objective it addressed.",
-    description: "Project contribution and results", descriptionHint: "Describe the challenge, your contribution, the process or tools used, and measurable or demonstrable results."
+    description: "Project contribution and results", descriptionHint: "Describe the challenge, your contribution, the process or tools used, and measurable or demonstrable results.",
+    supportsUrl: true, urlLabel: "Project URL", urlHint: "Add a portfolio, repository, case study, publication, or live project link."
   },
   interests: {
     eyebrow: "Additional context", title: "Interests & hobbies",
@@ -89,6 +92,10 @@ const optionMarkup = (options, selected) => options.map(value =>
 
 function entryMarkup(entry = {}) {
   const config = sectionConfig[activeSection];
+  const urlField = config.supportsUrl ? `<label>${config.urlLabel}
+      <input type="url" name="url" value="${escapeHtml(entry.url || "")}" placeholder="https://example.com">
+      <small>${config.urlHint}</small>
+    </label>` : "";
   return `<fieldset class="profile-entry">
     <legend>Entry <span></span></legend>
     <label>${config.name}
@@ -99,6 +106,7 @@ function entryMarkup(entry = {}) {
       <textarea name="description" maxlength="600" rows="6" placeholder="${config.descriptionHint}" required>${escapeHtml(entry.description || "")}</textarea>
       <small><span data-count="description">${(entry.description || "").length}</span>/600 characters</small>
     </label>
+    ${urlField}
     <div class="select-grid">
       <label>Proficiency level<select name="proficiency">${optionMarkup(proficiencyOptions, entry.proficiency || "Not specified")}</select></label>
       <label>Evidence or verification<select name="evidence">${optionMarkup(evidenceOptions, entry.evidence || "Not specified")}</select></label>
@@ -130,8 +138,9 @@ function collectEntries() {
     name: entry.querySelector('[name="name"]').value.trim(),
     description: entry.querySelector('[name="description"]').value.trim(),
     proficiency: entry.querySelector('[name="proficiency"]').value,
-    evidence: entry.querySelector('[name="evidence"]').value
-  })).filter(entry => entry.name || entry.description);
+    evidence: entry.querySelector('[name="evidence"]').value,
+    url: entry.querySelector('[name="url"]')?.value.trim() || ""
+  })).filter(entry => entry.name || entry.description || entry.url);
 }
 
 async function openEditor(section) {
