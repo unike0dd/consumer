@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Gabo Services | Profile</title>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <script src="script.js?v=2" defer></script>
 <link rel="stylesheet" href="../responsive.css?v=3">
 </head>
@@ -16,7 +16,15 @@
     </header>
 
     <section class="profile-hero">
-      <div>
+      <nav class="profile-quick-actions" aria-label="Quick actions">
+        <span>Quick actions</span>
+        <div>
+          <a href="#profile-sections">Upload résumé</a>
+          <a href="../task/#jobs">Find opportunities</a>
+          <a href="../task/#tracker">View applications</a>
+        </div>
+      </nav>
+      <div class="profile-introduction">
         <p class="eyebrow">Talent profile</p>
         <h1>Your professional profile</h1>
         <p>Showcase your verified capabilities while keeping personal information private until contracted onboarding begins. Build your professional profile, discover opportunities, track applications, prepare for interviews, and manage your career growth, all in one place.</p>
@@ -42,7 +50,7 @@
       </article>
     </section>
 
-    <section class="profile-grid" aria-label="Professional profile sections">
+    <section class="profile-grid" id="profile-sections" aria-label="Professional profile sections">
       <button class="panel profile-card" type="button" data-section="summary">
         <span class="eyebrow">Professional value</span><strong>Summary</strong>
         <span>Describe the problems you solve, the value you create, and the environments where you perform best.</span>
