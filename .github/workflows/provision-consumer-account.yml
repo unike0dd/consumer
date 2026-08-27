@@ -41,12 +41,15 @@ jobs:
       - name: Validate and activate Consumer identity
         env:
           GOOGLE_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
-          FIREBASE_UID: ${{ inputs.firebase_uid }}
-          EXPECTED_EMAIL: ${{ inputs.expected_email }}
           FIREBASE_PROJECT_ID: gabo-service
         shell: bash
         run: |
           set -euo pipefail
+
+          FIREBASE_UID="$(jq -r '.inputs.firebase_uid // ""' "${GITHUB_EVENT_PATH}")"
+          EXPECTED_EMAIL="$(jq -r '.inputs.expected_email // ""' "${GITHUB_EVENT_PATH}")"
+          echo "::add-mask::${FIREBASE_UID}"
+          echo "::add-mask::${EXPECTED_EMAIL}"
 
           if [[ ! "${FIREBASE_UID}" =~ ^[A-Za-z0-9_-]{20,128}$ ]]; then
             echo "The Firebase UID format is invalid." >&2
