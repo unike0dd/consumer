@@ -4,12 +4,19 @@ The Consumer dashboard requires both Firebase Authentication and trusted custom 
 
 ## One-time Google Cloud permission
 
-Grant only the Consumer GitHub service account permission to read and update Firebase Authentication users:
+Create a project-level role containing only the two permissions required to validate and activate a Consumer account, then bind it to the Consumer GitHub service account:
 
 ```bash
+gcloud iam roles create consumerAccountProvisioner \
+  --project="gabo-service" \
+  --title="Consumer Account Provisioner" \
+  --description="Read one Firebase Auth user and update Consumer access claims" \
+  --permissions="firebaseauth.users.get,firebaseauth.users.update" \
+  --stage="GA"
+
 gcloud projects add-iam-policy-binding gabo-service \
   --member="serviceAccount:github-consumer-dev@gabo-service.iam.gserviceaccount.com" \
-  --role="roles/firebaseauth.admin"
+  --role="projects/gabo-service/roles/consumerAccountProvisioner"
 ```
 
 The repository already authenticates to this service account through Workload Identity Federation. Do not create or download a service-account key.
