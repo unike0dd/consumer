@@ -1,9 +1,18 @@
+const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
+const readNextStepState=()=>{try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}};
+let nextStepState=readNextStepState();
+
 const dashboard={
   audience:"Workspace",
   greeting:"Hello, Gabriel.",
   progress:[["Profile completeness",85],["Application follow-up",72],["Career checklist",68]],
   rows:[["Operations Coordinator","Casa Verde Market","Interview","Tuesday"],["Customer Support Specialist","Norte Studio","Under review","Updated today"],["Virtual Assistant","Sol & Mar","Applied","Aug 20"],["HR Coordinator","Andina Collective","Saved","New match"]],
-  tasks:[["Prepare for Operations Coordinator interview","Tuesday","10:00 AM"],["Update professional summary","Today","4:30 PM"],["Upload latest résumé","Tomorrow","9:00 AM"],["Review three new matches","Friday","2:00 PM"]]
+  tasks:[
+    {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM"},
+    {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
+    {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
+    {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
+  ]
 };
 
 document.title="Gabo Services | Workspace";
@@ -46,7 +55,7 @@ document.querySelector("#app").innerHTML=`
         </section>
         <aside class="right">
           <section class="panel"><div class="heading"><div><p class="eyebrow">At a glance</p><h2>Career progress</h2></div></div><div class="progress">${dashboard.progress.map(p=>`<div><p><span>${p[0]}</span><b>${p[1]}%</b></p><div><i style="width:${p[1]}%"></i></div></div>`).join("")}</div></section>
-          <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><a class="heading-link" href="task/">View tasks</a></div><div class="tasks">${dashboard.tasks.map(t=>`<label><input type="checkbox"><span><strong>${t[0]}</strong><small><span aria-hidden="true">▣</span> ${t[1]} · ${t[2]}</small></span></label>`).join("")}</div></section>
+          <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><a class="heading-link" href="task/#next-steps">View tasks</a></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${nextStepState[t.id]?"done":""}" data-task="${t.id}"><label><input type="checkbox" ${nextStepState[t.id]?"checked":""} aria-label="Mark ${t.title} done"><span><strong>${t.title}</strong><small><span aria-hidden="true">▣</span> ${t.date} · ${t.time}</small></span></label><button class="task-done" type="button" data-task-done="${t.id}" ${nextStepState[t.id]?"disabled":""}>${nextStepState[t.id]?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
         </aside>
       </div>
     </div>
@@ -67,4 +76,17 @@ setInterval(updateClock,60000);
 
 const input=document.querySelector(".search input"),articles=[...document.querySelectorAll(".rows article")],empty=document.querySelector(".empty"),count=document.querySelector(".count");
 input.addEventListener("input",()=>{let shown=0;articles.forEach(row=>{const match=row.dataset.search.includes(input.value.toLowerCase());row.hidden=!match;if(match)shown++});empty.hidden=shown!==0;count.textContent=`${shown} items`});
-document.querySelectorAll(".tasks input").forEach(box=>box.addEventListener("change",()=>box.closest("label").classList.toggle("done",box.checked)));
+function updateTaskCenter(){
+  document.querySelectorAll("[data-task]").forEach(item=>{
+    const done=Boolean(nextStepState[item.dataset.task]);
+    item.classList.toggle("done",done);
+    item.querySelector("input").checked=done;
+    const button=item.querySelector(".task-done");
+    button.disabled=done;
+    button.textContent=done?"DONE ✓":"DONE";
+  });
+}
+function setTaskDone(id,done=true){nextStepState[id]=done;localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));updateTaskCenter()}
+document.querySelector(".tasks").addEventListener("click",event=>{const button=event.target.closest("[data-task-done]");if(button)setTaskDone(button.dataset.taskDone,true)});
+document.querySelectorAll(".tasks input").forEach(box=>box.addEventListener("change",()=>setTaskDone(box.closest("[data-task]").dataset.task,box.checked)));
+window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}});
