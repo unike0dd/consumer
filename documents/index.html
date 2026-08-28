@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Professional Profile | Documents</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <main class="documents-page">
+    <header class="documents-header">
+      <a class="brand" href="../">Gabo Services</a>
+      <nav aria-label="Document navigation"><a href="../profile/">Profile</a><a href="../">Workspace</a></nav>
+    </header>
+
+    <section class="documents-hero">
+      <div><p class="eyebrow">Documents</p><h1>Professional profile document</h1><p>Preview the professional document created from your saved Profile sections, arrange its hierarchy, and save it as a PDF.</p></div>
+      <button class="pdf-action" id="print-document" type="button">Download / Save PDF</button>
+    </section>
+
+    <div class="documents-workspace">
+      <aside class="order-panel" aria-labelledby="order-title">
+        <p class="eyebrow">Document hierarchy</p>
+        <h2 id="order-title">Arrange sections</h2>
+        <p>Move sections without changing the information saved in your Profile.</p>
+        <ol id="section-order"></ol>
+        <button class="secondary-action" id="reset-order" type="button">Reset order</button>
+        <p class="browser-note">This MVP document and its preferred order remain in this browser.</p>
+      </aside>
+
+      <section class="preview-column" aria-labelledby="preview-title">
+        <div class="preview-label"><div><p class="eyebrow">PDF preview</p><h2 id="preview-title">What employers will see</h2></div><span>A4</span></div>
+        <article class="pdf-sheet" id="professional-document">
+          <header class="pdf-header">
+            <img id="document-photo" alt="Profile picture" hidden>
+            <div><p>Verified capabilities</p><h2>Professional Profile</h2><span>Skills, knowledge, experience, education, and evidence of work</span></div>
+          </header>
+          <div class="pdf-content" id="document-sections"></div>
+          <footer class="pdf-footer">Generated from the End User’s saved Gabo Services Profile</footer>
+        </article>
+        <div class="empty-document" id="empty-document" hidden>
+          <h3>No saved Profile sections yet</h3>
+          <p>Complete and save at least one Profile section to create the professional document.</p>
+          <a href="../profile/#profile-sections">Complete Profile</a>
+        </div>
+      </section>
+    </div>
+    <div class="documents-toast" id="documents-toast" role="status" aria-live="polite" hidden></div>
+  </main>
+  <script src="script.js?v=1" defer></script>
+</body>
+</html>
