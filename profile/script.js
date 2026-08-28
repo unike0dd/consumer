@@ -51,6 +51,12 @@ const dialog = document.querySelector("#profile-dialog");
 const form = document.querySelector("#profile-form");
 const list = document.querySelector("#entry-list");
 const toast = document.querySelector("#profile-toast");
+const photoInput = document.querySelector("#photo-input");
+const photoSelect = document.querySelector("#photo-select");
+const photoRemove = document.querySelector("#photo-remove");
+const photoImage = document.querySelector("#profile-photo");
+const photoPlaceholder = document.querySelector("#photo-placeholder");
+let photoObjectUrl = "";
 let activeSection = "";
 let workingEntries = [];
 
@@ -84,6 +90,39 @@ async function writeSection(section, entries, status) {
     transaction.oncomplete = () => resolve(updatedAt);
     transaction.onerror = () => reject(transaction.error);
   });
+}
+
+async function writePhoto(blob) {
+  const db = await openDatabase();
+  const updatedAt = new Date().toISOString();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    transaction.objectStore(STORE).put({ section: "profile-photo", blob, updatedAt });
+    transaction.oncomplete = () => resolve(updatedAt);
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+async function deletePhoto() {
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    transaction.objectStore(STORE).delete("profile-photo");
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+async function refreshPhoto() {
+  const records = await readAll();
+  const photo = records.find(item => item.section === "profile-photo")?.blob;
+  if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl);
+  photoObjectUrl = photo ? URL.createObjectURL(photo) : "";
+  photoImage.src = photoObjectUrl;
+  photoImage.hidden = !photo;
+  photoPlaceholder.hidden = Boolean(photo);
+  photoRemove.hidden = !photo;
+  photoSelect.textContent = photo ? "Replace picture" : "Upload picture";
 }
 
 const optionMarkup = (options, selected) => options.map(value =>
@@ -228,4 +267,30 @@ dialog.addEventListener("click", event => {
   if (event.target === dialog) closeEditor();
 });
 
-refreshSummary().catch(() => showToast("Saved profile information is temporarily unavailable."));
+photoSelect.addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files?.[0];
+  if (!file) return;
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    showToast("Choose a JPEG, PNG, or WebP picture.");
+    photoInput.value = "";
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("The profile picture must be 5 MB or smaller.");
+    photoInput.value = "";
+    return;
+  }
+  writePhoto(file).then(() => Promise.all([refreshPhoto(), refreshSummary()])).then(() => {
+    showToast("Profile picture saved in this browser.");
+    photoInput.value = "";
+  }).catch(() => showToast("The profile picture could not be saved."));
+});
+photoRemove.addEventListener("click", () => {
+  deletePhoto().then(() => Promise.all([refreshPhoto(), refreshSummary()])).then(() => {
+    showToast("Profile picture removed.");
+  }).catch(() => showToast("The profile picture could not be removed."));
+});
+window.addEventListener("pagehide", () => { if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl); });
+
+Promise.all([refreshSummary(), refreshPhoto()]).catch(() => showToast("Saved profile information is temporarily unavailable."));
