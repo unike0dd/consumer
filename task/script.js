@@ -1,4 +1,5 @@
 const STATE_KEY="gabo:consumer:job-workflow:v1";
+const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
 const DB_NAME="gabo-consumer-career";
 const DB_VERSION=1;
 const STORE="applications";
@@ -8,6 +9,12 @@ const jobs={
   assistant:{id:"assistant",title:"Virtual Assistant",company:"Sol & Mar",location:"Remote",type:"Contract",market:true,description:"Provide dependable remote administrative support, organize information, coordinate calendars and follow-up, and help leaders maintain focus on priority work.",responsibilities:["Coordinate calendars, meetings, reminders, and action items.","Prepare documents and organize business information.","Track assignments and communicate progress clearly.","Support routine research and operational administration."],requirements:["Experience in administrative, executive, or virtual assistance.","Strong organization, discretion, and written communication.","Reliable access to a professional remote-work environment."]},
   hr:{id:"hr",title:"HR Coordinator",company:"Andina Collective",location:"Hybrid",type:"Full-time",market:false,description:"Support structured people operations through accurate coordination, candidate communication, record management, and dependable follow-up across the employee lifecycle.",responsibilities:["Coordinate interviews, documentation, and onboarding actions.","Maintain accurate candidate and employee records.","Support managers with timely status communication."],requirements:["Experience supporting HR, recruiting, or administrative workflows.","Confidentiality, accuracy, and professional communication."]}
 };
+const nextSteps=[
+  {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM"},
+  {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
+  {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
+  {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
+];
 const initialState={operations:{tracked:true,status:"Interview scheduled",interviewDate:"2026-09-01",interviewTime:"10:00"},support:{tracked:true,status:"Under review"},assistant:{tracked:true,status:"Applied"},hr:{saved:true,status:"Saved"}};
 const jobList=document.querySelector("#job-list");
 const savedList=document.querySelector("#saved-list");
@@ -15,12 +22,15 @@ const trackerList=document.querySelector("#tracker-list");
 const interviewList=document.querySelector("#interview-list");
 const dialog=document.querySelector("#job-dialog");
 const toast=document.querySelector(".toast");
+const nextStepList=document.querySelector("#next-step-list");
 const resumeInput=document.querySelector("#resume-input");
 const interviewForm=document.querySelector("#interview-form");
 let state=readState();
+let nextStepState=readNextStepState();
 let activeJob="";
 
 function readState(){try{return {...structuredClone(initialState),...JSON.parse(localStorage.getItem(STATE_KEY)||"{}")}}catch{return structuredClone(initialState)}}
+function readNextStepState(){try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}}
 function saveState(){localStorage.setItem(STATE_KEY,JSON.stringify(state))}
 function jobState(id){return state[id]||(state[id]={})}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character])}
@@ -33,6 +43,12 @@ async function readResume(jobId){const db=await openDatabase();return new Promis
 function actionButtons(job){
   const current=jobState(job.id);
   return `<div class="job-actions"><button type="button" data-job-action="save" data-job="${job.id}" aria-pressed="${Boolean(current.saved)}">${current.saved?"Saved":"Save Job"}</button><button type="button" data-job-action="track" data-job="${job.id}" aria-pressed="${Boolean(current.tracked)}">${current.tracked?"Tracked":"Track"}</button><button type="button" data-job-action="interview" data-job="${job.id}" aria-pressed="${Boolean(current.interviewDate)}">${current.interviewDate?"Interview Set":"Set Up Interview"}</button></div>`;
+}
+
+function renderNextSteps(){
+  const complete=nextSteps.filter(task=>nextStepState[task.id]).length;
+  document.querySelector("#next-step-count").textContent=`${complete} of ${nextSteps.length} completed`;
+  nextStepList.innerHTML=nextSteps.map(task=>`<article class="next-step ${nextStepState[task.id]?"done":""}" data-next-step="${task.id}"><div><strong>${escapeHtml(task.title)}</strong><small><span aria-hidden="true">▣</span> ${task.date} · ${task.time}</small></div><span class="task-status">${nextStepState[task.id]?"Done":"Pending"}</span><button type="button" data-toggle-next-step="${task.id}">${nextStepState[task.id]?"Reopen":"Mark Done"}</button></article>`).join("");
 }
 
 function renderJobs(){
@@ -63,7 +79,7 @@ function renderInterviews(){
   }).join(""):`<p class="empty-state">No interviews scheduled yet.</p>`;
 }
 
-function renderAll(){renderJobs();renderSaved();renderTracker();renderInterviews();if(activeJob)updateDialogActions()}
+function renderAll(){renderNextSteps();renderJobs();renderSaved();renderTracker();renderInterviews();if(activeJob)updateDialogActions()}
 
 function updateDialogActions(){
   const current=jobState(activeJob);
@@ -100,9 +116,12 @@ function toggleState(id,action){
 }
 
 document.addEventListener("click",event=>{
+  const nextStep=event.target.closest("[data-toggle-next-step]");if(nextStep){const id=nextStep.dataset.toggleNextStep;nextStepState[id]=!nextStepState[id];localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));renderNextSteps();showToast(nextStepState[id]?"Task marked done.":"Task reopened.");return}
   const open=event.target.closest("[data-open-job]");if(open){openJob(open.dataset.openJob);return}
   const action=event.target.closest("[data-job-action]");if(action){if(action.dataset.jobAction==="interview"){openJob(action.dataset.job);interviewForm.hidden=false;document.querySelector("#interview-date").focus()}else toggleState(action.dataset.job,action.dataset.jobAction)}
 });
+
+window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();renderNextSteps()}});
 
 dialog.querySelector(".dialog-close").addEventListener("click",()=>dialog.close());
 dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
