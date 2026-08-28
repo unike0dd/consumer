@@ -78,3 +78,13 @@ button,a,input,select,textarea{max-width:100%}
 .status-link:hover,.status-link:focus-visible{text-decoration:underline}
 .heading-link{color:var(--blue);font-size:12px;font-weight:800;text-decoration:none}
 .heading-link:hover,.heading-link:focus-visible{text-decoration:underline}
+
+/* Shared dashboard and Task-page completion control */
+.tasks .task-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:2px 8px}
+.tasks .task-item label{min-width:0;padding-inline:0}
+.task-done{min-height:34px;padding:7px 10px;border:1px solid #b8d99d;border-radius:8px;background:#ddefc7;color:var(--green);font-size:10px;font-weight:900;letter-spacing:.06em;cursor:pointer}
+.task-done:hover,.task-done:focus-visible{border-color:var(--green);background:var(--green);color:white;outline:0}
+.task-done:focus-visible{box-shadow:0 0 0 3px #d6a13c55}
+.task-done:disabled{border-color:#c8d5c0;background:#edf3e8;color:#6b7a71;cursor:default}
+.tasks .task-item.done label>span{color:var(--muted);text-decoration:line-through}
+@media(max-width:420px){.tasks .task-item{grid-template-columns:1fr}.task-done{justify-self:start;margin-left:30px}}
