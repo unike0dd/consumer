@@ -18,7 +18,7 @@ document.querySelector("#app").innerHTML=`
       <a class="nav" href="task/"><span class="nav-mark" aria-hidden="true"></span>Task</a>
       <div class="nav-group">
         <a class="nav" href="#messages"><span class="nav-mark" aria-hidden="true"></span>Messages</a>
-        <a class="nav" href="#documents"><span class="nav-mark" aria-hidden="true"></span>Documents</a>
+        <a class="nav" href="documents/"><span class="nav-mark" aria-hidden="true"></span>Documents</a>
       </div>
       <div class="nav-group">
         <a class="nav" href="#privacy"><span class="nav-mark" aria-hidden="true"></span>Privacy &amp; Consent</a>
@@ -37,7 +37,7 @@ document.querySelector("#app").innerHTML=`
     <div class="content">
       <section class="welcome">
         <div><div class="welcome-meta"><p class="eyebrow">${dashboard.audience}</p><time id="workspace-clock" aria-label="Current date and time"></time></div><h1>${dashboard.greeting}</h1></div>
-        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="profile/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#tracker">View applications</a></div></nav>
+        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="documents/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#tracker">View applications</a></div></nav>
       </section>
       <div class="grid">
         <section class="panel activity">
