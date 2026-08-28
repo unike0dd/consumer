@@ -4,16 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Tasks | Gabo Services</title>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <link rel="stylesheet" href="../responsive.css?v=3">
 </head>
 <body>
   <main class="task-page">
     <header class="task-header"><a class="brand" href="../">Gabo Services</a><a class="back-link" href="../">Back to workspace</a></header>
     <section class="task-hero"><p class="eyebrow">Task</p><h1>Your career tasks</h1><p>Explore opportunities, save roles, track applications, and prepare for scheduled interviews in one place.</p></section>
-    <nav class="section-nav" aria-label="Task sections"><a href="#jobs">Jobs</a><a href="#saved">Saved Jobs</a><a href="#tracker">Jobs Tracker</a><a href="#interviews">Interviews</a></nav>
+    <nav class="section-nav" aria-label="Task sections"><a href="#next-steps">Next Steps</a><a href="#jobs">Jobs</a><a href="#saved">Saved Jobs</a><a href="#tracker">Jobs Tracker</a><a href="#interviews">Interviews</a></nav>
 
     <div class="task-grid">
+      <section class="task-card task-card-wide" id="next-steps">
+        <div class="card-heading"><div><p class="eyebrow">Task center</p><h2>Next Steps</h2></div><span id="next-step-count">0 completed</span></div>
+        <div class="next-step-list" id="next-step-list"></div>
+      </section>
       <section class="task-card task-card-wide" id="jobs">
         <div class="card-heading"><div><p class="eyebrow">Market availability</p><h2>Jobs</h2></div><span id="job-count">3 available</span></div>
         <div class="job-list" id="job-list"></div>
@@ -66,6 +70,6 @@
       </div>
     </article>
   </dialog>
-  <script src="script.js?v=2" defer></script>
+  <script src="script.js?v=3" defer></script>
 </body>
 </html>

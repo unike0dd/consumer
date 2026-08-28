@@ -48,6 +48,15 @@ h1{font-size:clamp(42px,5vw,66px)}h2{font-size:30px}h3{font-size:22px}
 .interview-list p{display:grid;gap:4px;margin:0;text-align:right}.interview-list p span{color:var(--muted);font-size:13px}
 .empty-state{margin:0;padding:28px 4px;color:var(--muted);font-size:13px}
 .mvp-note{max-width:1320px;margin:20px auto 0;padding:0 clamp(22px,5vw,72px);color:var(--muted);font-size:11px;line-height:1.5}
+.next-step-list{display:grid;padding-top:8px}
+.next-step{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:15px 4px;border-bottom:1px solid #ebe4d9}
+.next-step:last-child{border:0}
+.next-step>div strong,.next-step>div small{display:block}.next-step>div strong{color:var(--green)}.next-step>div small{margin-top:5px;color:var(--muted);font-size:11px;font-weight:700}
+.next-step.done>div{text-decoration:line-through}.next-step.done>div strong{color:var(--muted)}
+.task-status{padding:6px 9px;border-radius:18px;background:var(--goldsoft);color:#76510f;font-size:10px;font-weight:900;text-transform:uppercase}
+.next-step.done .task-status{background:#ddefc7;color:var(--green)}
+.next-step>button{min-height:36px;padding:8px 10px;border:1px solid #b8d99d;border-radius:8px;background:#ddefc7;color:var(--green);font-size:10px;font-weight:900;cursor:pointer}
+.next-step>button:hover,.next-step>button:focus-visible{border-color:var(--green);background:var(--green);color:white;outline:0}
 .toast{position:fixed;right:24px;bottom:24px;z-index:30;max-width:360px;padding:14px 18px;border-radius:12px;background:var(--deep);color:white;box-shadow:0 12px 36px #0003;font-weight:700}.toast[hidden]{display:none}
 
 .job-dialog{width:min(920px,calc(100vw - 32px));max-height:min(90vh,940px);padding:0;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:0 28px 90px #071d1860}
@@ -76,5 +85,5 @@ h1{font-size:clamp(42px,5vw,66px)}h2{font-size:30px}h3{font-size:22px}
 .interview-form .primary-action{justify-self:start}
 
 @media(max-width:900px){.job-list>article{grid-template-columns:1fr}.job-actions{justify-content:flex-start}}
-@media(max-width:760px){.task-grid{grid-template-columns:1fr}.task-card-wide{grid-column:auto}.saved-job,.tracker-list li{align-items:flex-start;flex-direction:column}.tracker-list b{text-align:left}.interview-list article{align-items:flex-start;flex-wrap:wrap}.interview-list button{min-width:calc(100% - 90px)}.interview-list p{width:100%;padding-left:84px;text-align:left}.dialog-header,.dialog-body{padding-left:19px;padding-right:19px}}
+@media(max-width:760px){.task-grid{grid-template-columns:1fr}.task-card-wide{grid-column:auto}.saved-job,.tracker-list li{align-items:flex-start;flex-direction:column}.tracker-list b{text-align:left}.next-step{grid-template-columns:1fr auto}.next-step>button{grid-column:1/-1;justify-self:start}.interview-list article{align-items:flex-start;flex-wrap:wrap}.interview-list button{min-width:calc(100% - 90px)}.interview-list p{width:100%;padding-left:84px;text-align:left}.dialog-header,.dialog-body{padding-left:19px;padding-right:19px}}
 @media(max-width:480px){.task-header{min-height:74px}.brand{font-size:23px}.back-link{font-size:12px}.task-card{padding:20px}.section-nav{gap:15px}.job-actions,.apply-actions,.dialog-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.job-actions button,.apply-actions>*{width:100%}.interview-form>div{grid-template-columns:1fr}.dialog-header h2{font-size:29px}}
