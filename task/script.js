@@ -25,16 +25,29 @@ const toast=document.querySelector(".toast");
 const nextStepList=document.querySelector("#next-step-list");
 const resumeInput=document.querySelector("#resume-input");
 const interviewForm=document.querySelector("#interview-form");
+const archivedTaskToggle=document.querySelector("#archived-task-toggle");
 let state=readState();
 let nextStepState=readNextStepState();
 let activeJob="";
+let showArchivedTasks=false;
 
 function readState(){try{return {...structuredClone(initialState),...JSON.parse(localStorage.getItem(STATE_KEY)||"{}")}}catch{return structuredClone(initialState)}}
-function readNextStepState(){try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}}
+function readNextStepState(){
+  try{
+    const stored=JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}");
+    return Object.fromEntries(Object.entries(stored).map(([id,value])=>[id,typeof value==="boolean"?{done:value}:value]));
+  }catch{return {}}
+}
 function saveState(){localStorage.setItem(STATE_KEY,JSON.stringify(state))}
 function jobState(id){return state[id]||(state[id]={})}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character])}
 function showToast(message){toast.textContent=message;toast.hidden=false;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>{toast.hidden=true},3000)}
+function saveNextStepState(){localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState))}
+function taskActionIcon(action){
+  if(action==="archive")return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM3 4h18v3H3zM9 11h6"/></svg>';
+  if(action==="focus")return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5h10v15H5V9M9 5v4H5M9 5 5 9M9 13h6M9 16h4"/></svg>';
+  return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6.1 8.5A7 7 0 0 1 18.7 7M17.9 15.5A7 7 0 0 1 5.3 17"/></svg>';
+}
 
 function openDatabase(){return new Promise((resolve,reject)=>{const request=indexedDB.open(DB_NAME,DB_VERSION);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:"jobId"})};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)})}
 async function writeResume(jobId,file){const db=await openDatabase();return new Promise((resolve,reject)=>{const transaction=db.transaction(STORE,"readwrite");transaction.objectStore(STORE).put({jobId,resumeName:file.name,resumeBlob:file,updatedAt:new Date().toISOString()});transaction.oncomplete=resolve;transaction.onerror=()=>reject(transaction.error)})}
@@ -46,9 +59,18 @@ function actionButtons(job){
 }
 
 function renderNextSteps(){
-  const complete=nextSteps.filter(task=>nextStepState[task.id]).length;
-  document.querySelector("#next-step-count").textContent=`${complete} of ${nextSteps.length} completed`;
-  nextStepList.innerHTML=nextSteps.map(task=>`<article class="next-step ${nextStepState[task.id]?"done":""}" data-next-step="${task.id}"><div><strong>${escapeHtml(task.title)}</strong><small><span aria-hidden="true">▣</span> ${task.date} · ${task.time}</small></div><span class="task-status">${nextStepState[task.id]?"Done":"Pending"}</span><button type="button" data-toggle-next-step="${task.id}">${nextStepState[task.id]?"Reopen":"Mark Done"}</button></article>`).join("");
+  const visibleTasks=nextSteps.filter(task=>showArchivedTasks||!nextStepState[task.id]?.archived);
+  const activeTasks=nextSteps.filter(task=>!nextStepState[task.id]?.archived);
+  const complete=activeTasks.filter(task=>nextStepState[task.id]?.done).length;
+  const archivedCount=nextSteps.length-activeTasks.length;
+  document.querySelector("#next-step-count").textContent=`${complete} of ${activeTasks.length} completed`;
+  archivedTaskToggle.hidden=!archivedCount;
+  archivedTaskToggle.textContent=showArchivedTasks?"Hide archived":`Archived tasks (${archivedCount})`;
+  nextStepList.innerHTML=visibleTasks.map(task=>{
+    const taskState=nextStepState[task.id]||{};
+    const date=taskState.date||task.date,time=taskState.time||task.time;
+    return `<article class="next-step ${taskState.done?"done":""} ${taskState.focused?"focused":""}" data-next-step="${task.id}"><div><strong>${escapeHtml(task.title)}</strong><small><span aria-hidden="true">▣</span> ${escapeHtml(date)} · ${escapeHtml(time)}${taskState.archived?" · Archived":""}</small></div><button class="next-step-action" type="button" data-next-action="archive" data-task="${task.id}">${taskActionIcon("archive")}<span>${taskState.archived?"Restore":"Archive"}</span></button><button class="next-step-action" type="button" data-next-action="focus" data-task="${task.id}" aria-pressed="${Boolean(taskState.focused)}">${taskActionIcon("focus")}<span>Task</span></button><button class="next-step-action" type="button" data-next-action="reschedule" data-task="${task.id}">${taskActionIcon("reschedule")}<span>Re-schedule</span></button><span class="task-status">${taskState.done?"Done":"Pending"}</span><button class="next-step-toggle" type="button" data-toggle-next-step="${task.id}">${taskState.done?"Reopen":"Mark Done"}</button><form class="reschedule-editor" data-reschedule-form="${task.id}" hidden><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><button type="submit">Save schedule</button></form></article>`;
+  }).join("");
 }
 
 function renderJobs(){
@@ -116,9 +138,26 @@ function toggleState(id,action){
 }
 
 document.addEventListener("click",event=>{
-  const nextStep=event.target.closest("[data-toggle-next-step]");if(nextStep){const id=nextStep.dataset.toggleNextStep;nextStepState[id]=!nextStepState[id];localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));renderNextSteps();showToast(nextStepState[id]?"Task marked done.":"Task reopened.");return}
+  const nextStep=event.target.closest("[data-toggle-next-step]");if(nextStep){const id=nextStep.dataset.toggleNextStep;nextStepState[id]={...(nextStepState[id]||{}),done:!nextStepState[id]?.done};saveNextStepState();renderNextSteps();showToast(nextStepState[id].done?"Task marked done.":"Task reopened.");return}
+  const taskAction=event.target.closest("[data-next-action]");if(taskAction){
+    const id=taskAction.dataset.task,action=taskAction.dataset.nextAction,current=nextStepState[id]||{};
+    if(action==="archive"){nextStepState[id]={...current,archived:!current.archived};saveNextStepState();renderNextSteps();showToast(nextStepState[id].archived?"Task archived.":"Task restored.");return}
+    if(action==="focus"){const wasFocused=Boolean(current.focused);Object.keys(nextStepState).forEach(key=>{if(nextStepState[key])nextStepState[key].focused=false});nextStepState[id]={...current,focused:!wasFocused};saveNextStepState();renderNextSteps();showToast(nextStepState[id].focused?"Task selected as your current focus.":"Task focus removed.");return}
+    if(action==="reschedule"){const form=document.querySelector(`[data-reschedule-form="${id}"]`);form.hidden=!form.hidden;if(!form.hidden)form.elements.date.focus();return}
+  }
+  if(event.target.closest("#archived-task-toggle")){showArchivedTasks=!showArchivedTasks;renderNextSteps();return}
   const open=event.target.closest("[data-open-job]");if(open){openJob(open.dataset.openJob);return}
   const action=event.target.closest("[data-job-action]");if(action){if(action.dataset.jobAction==="interview"){openJob(action.dataset.job);interviewForm.hidden=false;document.querySelector("#interview-date").focus()}else toggleState(action.dataset.job,action.dataset.jobAction)}
+});
+
+document.addEventListener("submit",event=>{
+  const form=event.target.closest("[data-reschedule-form]");if(!form)return;
+  event.preventDefault();
+  const id=form.dataset.rescheduleForm,date=form.elements.date.value,time=form.elements.time.value;
+  if(!date||!time){showToast("Select both a date and time.");return}
+  const formattedDate=new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(new Date(`${date}T${time}`));
+  const formattedTime=new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(new Date(`${date}T${time}`));
+  nextStepState[id]={...(nextStepState[id]||{}),date:formattedDate,time:formattedTime};saveNextStepState();renderNextSteps();showToast("Task re-scheduled.");
 });
 
 window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();renderNextSteps()}});
