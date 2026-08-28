@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Gabo Services | Profile</title>
-  <link rel="stylesheet" href="styles.css?v=3">
-  <script src="script.js?v=2" defer></script>
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="script.js?v=3" defer></script>
 <link rel="stylesheet" href="../responsive.css?v=3">
 </head>
 <body class="theme-consumer">
@@ -16,22 +16,32 @@
     </header>
 
     <section class="profile-hero">
-      <nav class="profile-quick-actions" aria-label="Quick actions">
-        <span>Quick actions</span>
-        <div>
-          <a href="../index.html#documents">Upload résumé</a>
-          <a href="../task/#jobs">Find opportunities</a>
-          <a href="../task/#tracker">View applications</a>
+      <div class="profile-identity">
+        <div class="photo-uploader">
+          <div class="photo-frame">
+            <img id="profile-photo" alt="Your profile picture" hidden>
+            <span id="photo-placeholder" aria-hidden="true">＋</span>
+          </div>
+          <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <div class="photo-actions">
+            <button type="button" id="photo-select">Upload picture</button>
+            <button type="button" id="photo-remove" hidden>Remove</button>
+          </div>
+          <small>JPEG, PNG or WebP · 5 MB maximum</small>
         </div>
-      </nav>
-      <div class="profile-introduction">
-        <p class="eyebrow">Talent profile</p>
         <h1>Your professional profile</h1>
-        <p>Showcase your verified capabilities while keeping personal information private until contracted onboarding begins. Build your professional profile, discover opportunities, track applications, prepare for interviews, and manage your career growth, all in one place.</p>
       </div>
-      <div class="last-updated" aria-live="polite">
-        <span>Last updated</span>
-        <time id="last-updated" datetime="">Not saved yet</time>
+      <div class="profile-hero-side">
+        <div class="last-updated" aria-live="polite"><span>Last updated</span><time id="last-updated" datetime="">Not saved yet</time></div>
+        <nav class="profile-quick-actions" aria-label="Quick actions">
+          <span>Quick actions</span>
+          <div>
+            <a href="../index.html#documents">Upload résumé</a>
+            <a href="../task/#jobs">Find opportunities</a>
+            <a href="../task/#tracker">View applications</a>
+          </div>
+        </nav>
+        <p class="profile-summary">Showcase your verified capabilities while keeping personal information private until contracted onboarding begins. Build your professional profile, discover opportunities, track applications, prepare for interviews, and manage your career growth, all in one place.</p>
       </div>
     </section>
 
