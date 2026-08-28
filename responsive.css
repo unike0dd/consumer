@@ -189,16 +189,17 @@ img,svg,canvas,video{max-width:100%;height:auto}
   width:42px;
   height:42px;
   padding:0;
-  border:1px solid var(--line);
+  border:1px solid #b8d99d;
   border-radius:12px;
-  background:var(--paper);
+  background:#ddefc7;
   color:var(--green);
   box-shadow:0 8px 24px #0e30291f;
   cursor:pointer;
   transition:background-color .2s ease,color .2s ease,transform .2s ease;
 }
-.sidebar-open .sidebar-toggle{left:auto}
-.sidebar-toggle:hover{background:var(--goldsoft);transform:translateY(-1px)}
+.sidebar-open .sidebar-toggle{left:auto;border-color:var(--green);background:var(--green);color:#e8f5d7}
+.sidebar-toggle:hover{background:#cfe8b7;transform:translateY(-1px)}
+.sidebar-open .sidebar-toggle:hover{background:var(--deep)}
 .sidebar-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .sidebar-glyph{
   position:relative;
