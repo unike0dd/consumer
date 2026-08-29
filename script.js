@@ -40,8 +40,8 @@ document.querySelector("#app").innerHTML=`
     <header class="top">
       <b>Gabo Services</b>
       <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="consumer-sidebar" aria-expanded="false" aria-label="Open navigation menu"><span class="sidebar-glyph" aria-hidden="true"></span></button>
-      <label class="search">⌕<input aria-label="Search dashboard" placeholder="Search this dashboard"></label>
-      <a class="profile-link" href="profile/" aria-label="Open your profile"><span>Profile</span></a>
+      <div class="search" role="search"><button class="search-toggle" type="button" aria-label="Open dashboard search" aria-controls="dashboard-search" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button><input id="dashboard-search" aria-label="Search dashboard" placeholder="Search this dashboard"></div>
+      <a class="profile-link" href="profile/" aria-label="Open your profile"><span class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.7-4.1 3.2-6.2 7.5-6.2s6.8 2.1 7.5 6.2"/></svg></span><span class="profile-text">Profile</span></a>
     </header>
     <div class="content">
       <section class="welcome">
@@ -74,7 +74,18 @@ const updateClock=()=>{const now=new Date();clock.dateTime=now.toISOString();clo
 updateClock();
 setInterval(updateClock,60000);
 
-const input=document.querySelector(".search input"),articles=[...document.querySelectorAll(".rows article")],empty=document.querySelector(".empty"),count=document.querySelector(".count");
+const search=document.querySelector(".search"),searchToggle=document.querySelector(".search-toggle"),input=document.querySelector(".search input"),articles=[...document.querySelectorAll(".rows article")],empty=document.querySelector(".empty"),count=document.querySelector(".count");
+const adjustableScreen=window.matchMedia("(max-width: 1023px)");
+function setSearchOpen(open){
+  search.classList.toggle("search-open",open);
+  searchToggle.setAttribute("aria-expanded",String(open));
+  searchToggle.setAttribute("aria-label",open?"Close dashboard search":"Open dashboard search");
+  if(open)input.focus();
+}
+searchToggle.addEventListener("click",()=>{if(adjustableScreen.matches)setSearchOpen(!search.classList.contains("search-open"));else input.focus()});
+document.addEventListener("click",event=>{if(adjustableScreen.matches&&!search.contains(event.target)&&search.classList.contains("search-open"))setSearchOpen(false)});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&search.classList.contains("search-open")){setSearchOpen(false);searchToggle.focus()}});
+adjustableScreen.addEventListener?.("change",event=>{if(!event.matches)setSearchOpen(false)});
 input.addEventListener("input",()=>{let shown=0;articles.forEach(row=>{const match=row.dataset.search.includes(input.value.toLowerCase());row.hidden=!match;if(match)shown++});empty.hidden=shown!==0;count.textContent=`${shown} items`});
 function updateTaskCenter(){
   document.querySelectorAll("[data-task]").forEach(item=>{
