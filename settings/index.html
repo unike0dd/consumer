@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Gabo Services | Settings</title>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <link rel="stylesheet" href="../screens/adaptive.css?v=1">
   <script src="script.js?v=2" defer></script>
 </head>
@@ -19,7 +19,6 @@
       <p class="eyebrow">Account controls</p>
       <h1>Settings</h1>
       <p>Manage account recovery and decide which parts of your professional identity recruiters may view.</p>
-      <aside class="prototype-note">Visual MVP: use demonstration information only. Secure account changes activate when authenticated services are reconnected.</aside>
     </section>
 
     <form class="settings-layout" id="settings-form">
@@ -39,15 +38,15 @@
         </div>
         <label class="field-row">
           <span><strong>Phone Number</strong><small>For account recovery and MFA after verification.</small></span>
-          <input type="tel" name="phone" autocomplete="tel" placeholder="Demonstration value only">
+          <input type="tel" name="phone" autocomplete="tel" placeholder="Example: +593 99 123 4567">
         </label>
         <label class="field-row">
           <span><strong>Alternate Email Recovery</strong><small>Must be verified before it can recover the account.</small></span>
-          <input type="email" name="recoveryEmail" autocomplete="email" placeholder="Demonstration value only">
+          <input type="email" name="recoveryEmail" autocomplete="email" placeholder="Example: recovery@example.com">
         </label>
         <div class="field-row username-row">
           <label for="username"><strong>User Name</strong><small>A private sign-in alias that will replace displaying the email address.</small></label>
-          <div class="inline-control"><input id="username" name="username" pattern="[A-Za-z0-9._-]{4,32}" maxlength="32" placeholder="4–32 letters, numbers, dots, _ or -"><button class="secondary-button" id="change-username" type="button">Change</button></div>
+          <div class="inline-control"><input id="username" name="username" pattern="[A-Za-z0-9._-]{4,32}" maxlength="32" placeholder="Example: gabo.operations"><button class="secondary-button" id="change-username" type="button">Change</button></div>
         </div>
       </section>
 
@@ -75,27 +74,27 @@
           <div class="contact-fields">
             <div class="contact-field-row">
               <label for="contact-first-name"><strong>First name</strong><small>Your preferred first or professional name.</small></label>
-              <input id="contact-first-name" name="contactFirstName" type="text" maxlength="80" autocomplete="given-name" placeholder="Enter first name">
+              <input id="contact-first-name" name="contactFirstName" type="text" maxlength="80" autocomplete="given-name" placeholder="Example: Gabo">
               <label class="field-toggle"><input type="checkbox" name="showFirstName"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view first name</span></label>
             </div>
             <div class="contact-field-row">
               <label for="contact-last-name"><strong>Last name</strong><small>Your family or last name.</small></label>
-              <input id="contact-last-name" name="contactLastName" type="text" maxlength="80" autocomplete="family-name" placeholder="Enter last name">
+              <input id="contact-last-name" name="contactLastName" type="text" maxlength="80" autocomplete="family-name" placeholder="Example: García">
               <label class="field-toggle"><input type="checkbox" name="showLastName"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view last name</span></label>
             </div>
             <div class="contact-field-row">
               <label for="contact-address"><strong>Address</strong><small>Use only the location precision you are comfortable sharing.</small></label>
-              <input id="contact-address" name="contactAddress" type="text" maxlength="180" autocomplete="street-address" placeholder="Enter approved address or location">
+              <input id="contact-address" name="contactAddress" type="text" maxlength="180" autocomplete="street-address" placeholder="Example: Guayaquil, Ecuador">
               <label class="field-toggle"><input type="checkbox" name="showAddress"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view address</span></label>
             </div>
             <div class="contact-field-row">
               <label for="contact-phone"><strong>Phone number</strong><small>Your recruiter contact telephone number.</small></label>
-              <input id="contact-phone" name="contactPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="Enter phone number">
+              <input id="contact-phone" name="contactPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="Example: +593 99 123 4567">
               <label class="field-toggle"><input type="checkbox" name="showPhone"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view phone number</span></label>
             </div>
             <div class="contact-field-row">
               <label for="contact-email"><strong>Email</strong><small>Your approved professional contact email.</small></label>
-              <input id="contact-email" name="contactEmail" type="email" maxlength="160" autocomplete="email" placeholder="Enter professional email">
+              <input id="contact-email" name="contactEmail" type="email" maxlength="160" autocomplete="email" placeholder="Example: name@example.com">
               <label class="field-toggle"><input type="checkbox" name="showEmail"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view email</span></label>
             </div>
           </div>
