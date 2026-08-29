@@ -20,9 +20,19 @@ function collectSettings() {
     phone: String(data.get("phone") || "").trim(),
     recoveryEmail: String(data.get("recoveryEmail") || "").trim(),
     username: String(data.get("username") || "").trim(),
+    contactFirstName: String(data.get("contactFirstName") || "").trim(),
+    contactLastName: String(data.get("contactLastName") || "").trim(),
+    contactAddress: String(data.get("contactAddress") || "").trim(),
+    contactPhone: String(data.get("contactPhone") || "").trim(),
+    contactEmail: String(data.get("contactEmail") || "").trim(),
     shareResume: data.has("shareResume"),
     shareLocation: data.has("shareLocation"),
     shareContact: data.has("shareContact"),
+    showFirstName: data.has("showFirstName"),
+    showLastName: data.has("showLastName"),
+    showAddress: data.has("showAddress"),
+    showPhone: data.has("showPhone"),
+    showEmail: data.has("showEmail"),
     sharePicture: data.has("sharePicture")
   };
 }
@@ -39,9 +49,12 @@ function restoreSettings() {
 }
 
 function refreshSwitches() {
-  form.querySelectorAll('.toggle-row input[type="checkbox"]').forEach(input => {
-    input.closest(".toggle-row").querySelector(".switch-state").textContent = input.checked ? "ON" : "OFF";
+  form.querySelectorAll('.toggle-row input[type="checkbox"],.field-toggle input[type="checkbox"]').forEach(input => {
+    input.closest("label").querySelector(".switch-state").textContent = input.checked ? "ON" : "OFF";
   });
+  const contactAllowed=form.elements.namedItem("shareContact").checked;
+  document.querySelector("#contact-access-state").textContent=contactAllowed?"Recruiter access ON":"Recruiter access OFF";
+  document.querySelector(".contact-visibility").classList.toggle("contact-access-on",contactAllowed);
 }
 
 form.addEventListener("change", event => {

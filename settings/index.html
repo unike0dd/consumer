@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Gabo Services | Settings</title>
-  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="styles.css?v=2">
   <link rel="stylesheet" href="../screens/adaptive.css?v=1">
-  <script src="script.js?v=1" defer></script>
+  <script src="script.js?v=2" defer></script>
 </head>
 <body>
   <main class="settings-page">
@@ -56,7 +56,7 @@
           <div><p class="eyebrow">Privacy &amp; consent</p><h2 id="visibility-title">Recruiter visibility</h2></div>
           <span class="status-badge private">Private by default</span>
         </div>
-        <p class="visibility-intro">Your basic recruiter profile shows only your first name and achievement titles. Each additional section requires your permission.</p>
+        <p class="visibility-intro">Your basic recruiter profile shows professional achievement titles only. Contact information and every additional section require your permission.</p>
 
         <label class="toggle-row">
           <span><strong>Allow recruiters to view Resume</strong><small>Share the professional résumé generated from approved Profile sections.</small></span>
@@ -67,9 +67,39 @@
           <input type="checkbox" name="shareLocation"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
         </label>
         <label class="toggle-row">
-          <span><strong>Allow recruiters to view Contact</strong><small>Share approved contact details only after explicit consent.</small></span>
+          <span><strong>Allow recruiters to view Contact Information</strong><small>This master permission must be ON before any approved contact field becomes visible.</small></span>
           <input type="checkbox" name="shareContact"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
         </label>
+        <section class="contact-visibility" aria-labelledby="contact-information-title">
+          <div class="contact-heading"><div><p class="eyebrow">Contact information</p><h3 id="contact-information-title">Choose what recruiters may view</h3><p>Enter only the information you want saved in this browser. Every field remains private until both its View control and the master contact permission are ON.</p></div><span class="contact-access-state" id="contact-access-state">Recruiter access OFF</span></div>
+          <div class="contact-fields">
+            <div class="contact-field-row">
+              <label for="contact-first-name"><strong>First name</strong><small>Your preferred first or professional name.</small></label>
+              <input id="contact-first-name" name="contactFirstName" type="text" maxlength="80" autocomplete="given-name" placeholder="Enter first name">
+              <label class="field-toggle"><input type="checkbox" name="showFirstName"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view first name</span></label>
+            </div>
+            <div class="contact-field-row">
+              <label for="contact-last-name"><strong>Last name</strong><small>Your family or last name.</small></label>
+              <input id="contact-last-name" name="contactLastName" type="text" maxlength="80" autocomplete="family-name" placeholder="Enter last name">
+              <label class="field-toggle"><input type="checkbox" name="showLastName"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view last name</span></label>
+            </div>
+            <div class="contact-field-row">
+              <label for="contact-address"><strong>Address</strong><small>Use only the location precision you are comfortable sharing.</small></label>
+              <input id="contact-address" name="contactAddress" type="text" maxlength="180" autocomplete="street-address" placeholder="Enter approved address or location">
+              <label class="field-toggle"><input type="checkbox" name="showAddress"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view address</span></label>
+            </div>
+            <div class="contact-field-row">
+              <label for="contact-phone"><strong>Phone number</strong><small>Your recruiter contact telephone number.</small></label>
+              <input id="contact-phone" name="contactPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="Enter phone number">
+              <label class="field-toggle"><input type="checkbox" name="showPhone"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view phone number</span></label>
+            </div>
+            <div class="contact-field-row">
+              <label for="contact-email"><strong>Email</strong><small>Your approved professional contact email.</small></label>
+              <input id="contact-email" name="contactEmail" type="email" maxlength="160" autocomplete="email" placeholder="Enter professional email">
+              <label class="field-toggle"><input type="checkbox" name="showEmail"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b><span class="sr-only">Allow recruiters to view email</span></label>
+            </div>
+          </div>
+        </section>
         <label class="toggle-row">
           <span><strong>Allow recruiters to view your Picture</strong><small>Your photograph remains hidden unless you turn this permission on.</small></span>
           <input type="checkbox" name="sharePicture"><span class="switch" aria-hidden="true"></span><b class="switch-state">OFF</b>
