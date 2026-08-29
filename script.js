@@ -30,7 +30,7 @@ document.querySelector("#app").innerHTML=`
         <a class="nav" href="documents/"><span class="nav-mark" aria-hidden="true"></span>Documents</a>
       </div>
       <div class="nav-group">
-        <a class="nav" href="#privacy"><span class="nav-mark" aria-hidden="true"></span>Privacy &amp; Consent</a>
+        <a class="nav" href="settings/#privacy"><span class="nav-mark" aria-hidden="true"></span>Privacy &amp; Consent</a>
         <a class="nav" href="settings/"><span class="nav-mark" aria-hidden="true"></span>Settings</a>
       </div>
     </nav>
