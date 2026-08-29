@@ -109,7 +109,10 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .panel{height:auto;padding:18px}
   .panel-title,.heading{align-items:flex-start;flex-wrap:wrap}
   .panel-title h2,.heading h2{font-family:var(--gs-font);font-size:20px;font-weight:600}
-  .data-row,.rows article{grid-template-columns:minmax(0,1fr);gap:8px;min-height:0;padding:16px 10px}
+  .data-row{grid-template-columns:minmax(0,1fr);gap:8px;min-height:0;padding:16px 10px}
+  .rows article{grid-template-columns:38px minmax(0,1fr);align-items:start;gap:7px 11px;min-height:0;padding:16px 10px}
+  .rows article>i{grid-row:1 / span 3;grid-column:1;width:36px;height:36px}
+  .rows article>div,.rows article>b,.rows article>em,.rows article>.status-link{grid-column:2;min-width:0;justify-self:start;text-align:left}
   .data-row>strong,.data-row>em,.data-row>.status,.rows article>b,.rows article>em{display:block;justify-self:start;text-align:left}
   .row-main b,.rows article div strong{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:14px}
   .row-main small,.rows article div small{font-size:12px}
