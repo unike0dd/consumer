@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Professional Profile | Documents</title>
   <link rel="stylesheet" href="styles.css?v=3">
-  <link rel="stylesheet" href="resume.css?v=1">
+  <link rel="stylesheet" href="resume.css?v=2">
   <link rel="stylesheet" href="../screens/adaptive.css?v=1">
 </head>
 <body>
@@ -22,6 +22,16 @@
 
     <div class="documents-workspace">
       <aside class="order-panel" aria-labelledby="order-title">
+        <section class="resume-upload-panel" aria-labelledby="upload-resume-title">
+          <div class="upload-panel-heading"><span class="upload-resume-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 14v5h14v-5"/></svg></span><div><p class="eyebrow">Uploaded résumé</p><h2 id="upload-resume-title">Add your PDF</h2></div></div>
+          <p>Keep an existing résumé available alongside the document generated from your Profile.</p>
+          <label class="resume-upload-action" for="resume-upload-input">Upload résumé PDF<input id="resume-upload-input" type="file" accept="application/pdf,.pdf" hidden></label>
+          <article class="uploaded-resume" id="uploaded-resume" hidden>
+            <div><strong id="uploaded-resume-name"></strong><small id="uploaded-resume-meta"></small></div>
+            <div class="uploaded-resume-actions"><a id="view-uploaded-resume" href="#" target="_blank" rel="noopener">View PDF</a><button id="delete-uploaded-resume" type="button">Delete</button></div>
+          </article>
+          <small class="upload-storage-note">PDF only · 10 MB maximum · Stored in this browser</small>
+        </section>
         <p class="eyebrow">Document hierarchy</p>
         <h2 id="order-title">Arrange sections</h2>
         <p>Drag each two-line handle to arrange the document without changing the information saved in your Profile.</p>
@@ -50,7 +60,7 @@
     <div class="documents-toast" id="documents-toast" role="status" aria-live="polite" hidden></div>
   </main>
   <script src="../profile/resume-preview.js?v=1" defer></script>
-  <script src="script.js?v=3" defer></script>
+  <script src="script.js?v=4" defer></script>
   <script src="../screens/adaptive.js?v=1" defer></script>
 </body>
 </html>
