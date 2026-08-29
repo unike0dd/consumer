@@ -6,6 +6,34 @@
   line-height:1.35;
 }
 
+.resume-upload-panel{
+  margin-bottom:24px;
+  padding:18px;
+  border:1px solid #c7dce2;
+  border-radius:13px;
+  background:#f3f8fa;
+}
+.upload-panel-heading{display:flex;align-items:center;gap:11px}
+.upload-panel-heading h2{font-size:21px}
+.upload-panel-heading .eyebrow{margin-bottom:3px}
+.upload-resume-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:11px;background:#dcebf1;color:var(--blue)}
+.upload-resume-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.resume-upload-panel>p{margin:12px 0;color:var(--muted);font-size:12px;line-height:1.5}
+.resume-upload-action{display:flex;align-items:center;justify-content:center;min-height:42px;padding:9px 12px;border:1px solid var(--blue);border-radius:9px;background:var(--blue);color:white;font-size:11px;font-weight:900;cursor:pointer}
+.resume-upload-action:hover,.resume-upload-action:focus-within{background:var(--green);border-color:var(--green)}
+.uploaded-resume{display:grid;gap:12px;margin-top:12px;padding:12px;border:1px solid #c7dce2;border-radius:10px;background:white}
+.uploaded-resume[hidden]{display:none}
+.uploaded-resume strong,.uploaded-resume small{display:block;overflow-wrap:anywhere}
+.uploaded-resume strong{color:var(--green);font-size:12px}
+.uploaded-resume small{margin-top:4px;color:var(--muted);font-size:9px}
+.uploaded-resume-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.uploaded-resume-actions a,.uploaded-resume-actions button{display:flex;align-items:center;justify-content:center;min-height:34px;padding:7px 9px;border-radius:7px;font-size:10px;font-weight:900;text-decoration:none;cursor:pointer}
+.uploaded-resume-actions a{border:1px solid var(--blue);color:var(--blue)}
+.uploaded-resume-actions button{border:1px solid #b85c4a;background:white;color:#8a3d2d}
+.uploaded-resume-actions a:hover,.uploaded-resume-actions a:focus-visible{background:var(--soft)}
+.uploaded-resume-actions button:hover,.uploaded-resume-actions button:focus-visible{background:#fae8e3}
+.upload-storage-note{display:block;margin-top:10px;color:var(--muted);font-size:9px;line-height:1.4}
+
 @media print{
   .document-section{break-inside:auto}
   .document-section>h3{break-after:avoid}

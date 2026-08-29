@@ -11,11 +11,18 @@ const documentSheet=document.querySelector("#professional-document");
 const documentName=document.querySelector("#document-name");
 const documentHeadline=document.querySelector("#document-headline");
 const documentLocation=document.querySelector("#document-location");
+const resumeUploadInput=document.querySelector("#resume-upload-input");
+const uploadedResume=document.querySelector("#uploaded-resume");
+const uploadedResumeName=document.querySelector("#uploaded-resume-name");
+const uploadedResumeMeta=document.querySelector("#uploaded-resume-meta");
+const viewUploadedResume=document.querySelector("#view-uploaded-resume");
+const deleteUploadedResumeButton=document.querySelector("#delete-uploaded-resume");
 const emptyDocument=document.querySelector("#empty-document");
 const toast=document.querySelector("#documents-toast");
 let records=[];
 let order=readOrder();
 let photoObjectUrl="";
+let uploadedResumeObjectUrl="";
 let draggedSection="";
 let dropTarget="";
 let dropPosition="before";
@@ -44,6 +51,16 @@ async function readRecords(){
     request.onsuccess=()=>resolve(request.result);
     request.onerror=()=>reject(request.error);
   });
+}
+
+async function writeUploadedResume(file){
+  const db=await openDatabase(),updatedAt=new Date().toISOString();
+  return new Promise((resolve,reject)=>{const transaction=db.transaction(STORE,"readwrite");transaction.objectStore(STORE).put({section:"uploaded-resume",blob:file,fileName:file.name,fileSize:file.size,updatedAt});transaction.oncomplete=()=>resolve(updatedAt);transaction.onerror=()=>reject(transaction.error)});
+}
+
+async function deleteUploadedResume(){
+  const db=await openDatabase();
+  return new Promise((resolve,reject)=>{const transaction=db.transaction(STORE,"readwrite");transaction.objectStore(STORE).delete("uploaded-resume");transaction.oncomplete=resolve;transaction.onerror=()=>reject(transaction.error)});
 }
 
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character])}
@@ -107,6 +124,19 @@ function renderIdentity(){
   documentLocation.textContent=identity?.location||"Guayaquil, Ecuador";
 }
 
+function formatFileSize(bytes){return bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/(1024*1024)).toFixed(1)} MB`}
+
+function renderUploadedResume(){
+  const resume=records.find(record=>record.section==="uploaded-resume"&&record.blob);
+  if(uploadedResumeObjectUrl)URL.revokeObjectURL(uploadedResumeObjectUrl);
+  uploadedResumeObjectUrl=resume?URL.createObjectURL(resume.blob):"";
+  uploadedResume.hidden=!resume;
+  if(!resume){viewUploadedResume.removeAttribute("href");return}
+  uploadedResumeName.textContent=resume.fileName||"Uploaded résumé.pdf";
+  uploadedResumeMeta.textContent=`${formatFileSize(resume.fileSize||resume.blob.size)} · Added ${new Intl.DateTimeFormat(undefined,{dateStyle:"medium"}).format(new Date(resume.updatedAt))}`;
+  viewUploadedResume.href=uploadedResumeObjectUrl;
+}
+
 function showToast(message){toast.textContent=message;toast.hidden=false;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>{toast.hidden=true},2800)}
 
 function clearDropIndicators(){orderList.querySelectorAll(".drop-before,.drop-after").forEach(item=>item.classList.remove("drop-before","drop-after"))}
@@ -167,6 +197,16 @@ orderList.addEventListener("keydown",event=>{
 });
 document.querySelector("#reset-order").addEventListener("click",()=>{order=[...defaultOrder];localStorage.removeItem(ORDER_KEY);renderOrder();renderDocument();showToast("Default document order restored.")});
 document.querySelector("#print-document").addEventListener("click",()=>{if(documentSheet.hidden){showToast("Save a Profile section before creating a PDF.");return}window.print()});
-window.addEventListener("pagehide",()=>{if(photoObjectUrl)URL.revokeObjectURL(photoObjectUrl)});
+resumeUploadInput.addEventListener("change",()=>{
+  const file=resumeUploadInput.files?.[0];if(!file)return;
+  if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){showToast("Choose a PDF résumé.");resumeUploadInput.value="";return}
+  if(file.size>10*1024*1024){showToast("The résumé PDF must be 10 MB or smaller.");resumeUploadInput.value="";return}
+  writeUploadedResume(file).then(()=>readRecords()).then(result=>{records=result;renderUploadedResume();showToast("Résumé PDF uploaded.");resumeUploadInput.value=""}).catch(()=>showToast("The résumé PDF could not be stored."));
+});
+deleteUploadedResumeButton.addEventListener("click",()=>{
+  if(!window.confirm("Delete the uploaded résumé from this browser?"))return;
+  deleteUploadedResume().then(()=>readRecords()).then(result=>{records=result;renderUploadedResume();showToast("Uploaded résumé deleted.")}).catch(()=>showToast("The uploaded résumé could not be deleted."));
+});
+window.addEventListener("pagehide",()=>{if(photoObjectUrl)URL.revokeObjectURL(photoObjectUrl);if(uploadedResumeObjectUrl)URL.revokeObjectURL(uploadedResumeObjectUrl)});
 
-window.GaboResumePreview.seed(openDatabase).then(()=>readRecords()).then(result=>{records=result;renderOrder();renderPhoto();renderIdentity();renderDocument()}).catch(()=>{renderOrder();documentSheet.hidden=true;emptyDocument.hidden=false;showToast("Saved Profile information is temporarily unavailable.")});
+window.GaboResumePreview.seed(openDatabase).then(()=>readRecords()).then(result=>{records=result;renderOrder();renderPhoto();renderIdentity();renderUploadedResume();renderDocument()}).catch(()=>{renderOrder();documentSheet.hidden=true;emptyDocument.hidden=false;showToast("Saved Profile information is temporarily unavailable.")});
