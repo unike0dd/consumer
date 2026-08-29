@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Tasks | Gabo Services</title>
-  <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="../responsive.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="../responsive.css?v=5">
   <link rel="stylesheet" href="../screens/adaptive.css?v=1">
 </head>
 <body>
@@ -18,31 +18,37 @@
         <p>Explore opportunities, save roles, track applications, and prepare for scheduled interviews in one place.</p>
       </div>
     </section>
-    <nav class="section-nav" aria-label="Task sections"><a href="#next-steps">Next Steps</a><a href="#jobs">Jobs</a><a href="#saved">Saved Jobs</a><a href="#tracker">Jobs Tracker</a><a href="#interviews">Interviews</a></nav>
+    <nav class="section-nav" aria-label="Task sections">
+      <a class="section-toggle" href="#next-steps" data-section-target="next-steps" aria-controls="next-steps" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg><span>Next Steps</span></a>
+      <a class="section-toggle" href="#jobs" data-section-target="jobs" aria-controls="jobs" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h16v11H4zM9 8V5h6v3M4 12h16M10 12v2h4v-2"/></svg><span>Jobs</span></a>
+      <a class="section-toggle" href="#interviews" data-section-target="interviews" aria-controls="interviews" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4v3M19 4v3M4 8h16v12H4zM8 12h3M13 12h3M8 16h3"/></svg><span>Interviews</span></a>
+    </nav>
 
     <div class="task-grid">
-      <section class="task-card task-card-wide" id="next-steps">
+      <section class="task-card task-card-wide" id="next-steps" data-task-panel hidden>
         <div class="card-heading"><div><p class="eyebrow">Task center</p><h2>Next Steps</h2></div><div class="task-summary"><button id="archived-task-toggle" type="button" hidden></button><span id="next-step-count">0 completed</span></div></div>
         <div class="next-step-list" id="next-step-list"></div>
       </section>
-      <section class="task-card task-card-wide" id="jobs">
+      <section class="task-card task-card-wide" id="jobs" data-task-panel hidden>
         <div class="card-heading"><div><p class="eyebrow">Market availability</p><h2>Jobs</h2></div><span id="job-count">3 available</span></div>
         <div class="job-list" id="job-list"></div>
+        <div class="jobs-collection">
+          <section class="jobs-subsection" id="saved" aria-labelledby="saved-heading">
+            <div class="subsection-heading"><p class="eyebrow">Your shortlist</p><h3 id="saved-heading">Saved Jobs</h3></div>
+            <div class="saved-list" id="saved-list"></div>
+          </section>
+          <section class="jobs-subsection" id="tracker" aria-labelledby="tracker-heading">
+            <div class="subsection-heading"><p class="eyebrow">Application stages</p><h3 id="tracker-heading">Jobs Tracker</h3></div>
+            <ol class="tracker-list" id="tracker-list"></ol>
+          </section>
+        </div>
+        <p class="mvp-note">MVP preview: job actions and uploaded résumés remain in this browser until the employer application service is connected.</p>
       </section>
-      <section class="task-card" id="saved">
-        <div class="card-heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div></div>
-        <div class="saved-list" id="saved-list"></div>
-      </section>
-      <section class="task-card" id="tracker">
-        <div class="card-heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div></div>
-        <ol class="tracker-list" id="tracker-list"></ol>
-      </section>
-      <section class="task-card task-card-wide" id="interviews">
+      <section class="task-card task-card-wide" id="interviews" data-task-panel hidden>
         <div class="card-heading"><div><p class="eyebrow">Calendar</p><h2>Interviews</h2></div><a href="../#top">Dashboard tasks</a></div>
         <div class="interview-list" id="interview-list"></div>
       </section>
     </div>
-    <p class="mvp-note">MVP preview: job actions and uploaded résumés remain in this browser until the employer application service is connected.</p>
     <div class="toast" role="status" aria-live="polite" hidden></div>
   </main>
 
@@ -77,7 +83,7 @@
       </div>
     </article>
   </dialog>
-  <script src="script.js?v=4" defer></script>
+  <script src="script.js?v=5" defer></script>
   <script src="../screens/adaptive.js?v=1" defer></script>
 </body>
 </html>

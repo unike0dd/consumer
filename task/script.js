@@ -30,6 +30,15 @@ let state=readState();
 let nextStepState=readNextStepState();
 let activeJob="";
 let showArchivedTasks=false;
+const sectionToggles=[...document.querySelectorAll(".section-toggle")];
+const taskPanels=[...document.querySelectorAll("[data-task-panel]")];
+
+function setOpenSection(sectionId){
+  taskPanels.forEach(panel=>{panel.hidden=panel.id!==sectionId});
+  sectionToggles.forEach(toggle=>toggle.setAttribute("aria-expanded",String(toggle.dataset.sectionTarget===sectionId)));
+  const nextUrl=sectionId?`${location.pathname}${location.search}#${sectionId}`:`${location.pathname}${location.search}`;
+  history.replaceState(null,"",nextUrl);
+}
 
 function readState(){try{return {...structuredClone(initialState),...JSON.parse(localStorage.getItem(STATE_KEY)||"{}")}}catch{return structuredClone(initialState)}}
 function readNextStepState(){
@@ -138,6 +147,8 @@ function toggleState(id,action){
 }
 
 document.addEventListener("click",event=>{
+  const sectionToggle=event.target.closest(".section-toggle");
+  if(sectionToggle){event.preventDefault();const sectionId=sectionToggle.dataset.sectionTarget;setOpenSection(sectionToggle.getAttribute("aria-expanded")==="true"?"":sectionId);return}
   const nextStep=event.target.closest("[data-toggle-next-step]");if(nextStep){const id=nextStep.dataset.toggleNextStep;nextStepState[id]={...(nextStepState[id]||{}),done:!nextStepState[id]?.done};saveNextStepState();renderNextSteps();showToast(nextStepState[id].done?"Task marked done.":"Task reopened.");return}
   const taskAction=event.target.closest("[data-next-action]");if(taskAction){
     const id=taskAction.dataset.task,action=taskAction.dataset.nextAction,current=nextStepState[id]||{};
@@ -189,3 +200,4 @@ resumeInput.addEventListener("change",()=>{
 });
 
 renderAll();
+setOpenSection("");
