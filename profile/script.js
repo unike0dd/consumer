@@ -378,4 +378,4 @@ window.addEventListener("pagehide", () => {
   if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
 });
 
-Promise.all([refreshSummary(), refreshPhoto(), refreshIdentity()]).catch(() => showToast("Saved profile information is temporarily unavailable."));
+window.GaboResumePreview.seed(openDatabase).then(added=>Promise.all([refreshSummary(),refreshPhoto(),refreshIdentity()]).then(()=>{if(added)showToast("Your résumé preview is ready to review and edit.")})).catch(() => showToast("Saved profile information is temporarily unavailable."));

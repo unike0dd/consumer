@@ -8,6 +8,9 @@ const orderList=document.querySelector("#section-order");
 const documentSections=document.querySelector("#document-sections");
 const documentPhoto=document.querySelector("#document-photo");
 const documentSheet=document.querySelector("#professional-document");
+const documentName=document.querySelector("#document-name");
+const documentHeadline=document.querySelector("#document-headline");
+const documentLocation=document.querySelector("#document-location");
 const emptyDocument=document.querySelector("#empty-document");
 const toast=document.querySelector("#documents-toast");
 let records=[];
@@ -97,6 +100,13 @@ function renderPhoto(){
   documentPhoto.hidden=!blob;
 }
 
+function renderIdentity(){
+  const identity=records.find(record=>record.section==="profile-identity");
+  documentName.textContent=identity?.name||"Gabo";
+  documentHeadline.textContent=identity?.headline||"Remote Virtual Assistant | Operations & Client Support";
+  documentLocation.textContent=identity?.location||"Guayaquil, Ecuador";
+}
+
 function showToast(message){toast.textContent=message;toast.hidden=false;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>{toast.hidden=true},2800)}
 
 function clearDropIndicators(){orderList.querySelectorAll(".drop-before,.drop-after").forEach(item=>item.classList.remove("drop-before","drop-after"))}
@@ -159,4 +169,4 @@ document.querySelector("#reset-order").addEventListener("click",()=>{order=[...d
 document.querySelector("#print-document").addEventListener("click",()=>{if(documentSheet.hidden){showToast("Save a Profile section before creating a PDF.");return}window.print()});
 window.addEventListener("pagehide",()=>{if(photoObjectUrl)URL.revokeObjectURL(photoObjectUrl)});
 
-readRecords().then(result=>{records=result;renderOrder();renderPhoto();renderDocument()}).catch(()=>{renderOrder();documentSheet.hidden=true;emptyDocument.hidden=false;showToast("Saved Profile information is temporarily unavailable.")});
+window.GaboResumePreview.seed(openDatabase).then(()=>readRecords()).then(result=>{records=result;renderOrder();renderPhoto();renderIdentity();renderDocument()}).catch(()=>{renderOrder();documentSheet.hidden=true;emptyDocument.hidden=false;showToast("Saved Profile information is temporarily unavailable.")});
