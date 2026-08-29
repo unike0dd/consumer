@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Gabo Services | Profile</title>
-  <link rel="stylesheet" href="styles.css?v=4">
-  <script src="script.js?v=3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=5">
+  <script src="script.js?v=4" defer></script>
 <link rel="stylesheet" href="../responsive.css?v=3">
 <link rel="stylesheet" href="../screens/adaptive.css?v=1">
 </head>
@@ -22,15 +22,15 @@
           <div class="photo-frame">
             <img id="profile-photo" alt="Your profile picture" hidden>
             <span id="photo-placeholder" aria-hidden="true">＋</span>
+            <button class="identity-edit" id="identity-edit" type="button" aria-label="Edit profile picture and name">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16-.8 4.8L8 20l10.6-10.6a2.1 2.1 0 0 0 0-3L17.6 5a2.1 2.1 0 0 0-3 0L4 16Zm9.2-9.6 4.4 4.4M4 16l4 4"/></svg>
+            </button>
           </div>
-          <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
-          <div class="photo-actions">
-            <button type="button" id="photo-select">Upload picture</button>
-            <button type="button" id="photo-remove" hidden>Remove</button>
-          </div>
-          <small>JPEG, PNG or WebP · 5 MB maximum</small>
         </div>
-        <h1>Your professional profile</h1>
+        <div class="profile-name-block">
+          <p>Your professional profile</p>
+          <h1 id="profile-name">Your name</h1>
+        </div>
       </div>
       <div class="profile-hero-side">
         <div class="last-updated" aria-live="polite"><span>Last updated</span><time id="last-updated" datetime="">Not saved yet</time></div>
@@ -95,6 +95,37 @@
       </button>
     </section>
   </main>
+
+  <dialog class="identity-dialog" id="identity-dialog" aria-labelledby="identity-editor-title">
+    <form id="identity-form">
+      <header class="dialog-header">
+        <div><p class="eyebrow">Profile identity</p><h2 id="identity-editor-title">Edit picture and name</h2></div>
+        <button class="dialog-close" type="button" data-identity-action="cancel" aria-label="Close identity editor">×</button>
+      </header>
+      <div class="identity-editor-body">
+        <div class="identity-photo-editor">
+          <div class="identity-preview-frame">
+            <img id="identity-photo-preview" alt="Selected profile picture preview" hidden>
+            <span id="identity-preview-placeholder" aria-hidden="true">＋</span>
+          </div>
+          <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          <div class="identity-photo-actions">
+            <button class="secondary-action" type="button" id="photo-select">Choose picture</button>
+            <button class="danger-action" type="button" id="photo-remove" hidden>Remove picture</button>
+          </div>
+          <small>JPEG, PNG or WebP · 5 MB maximum</small>
+        </div>
+        <label class="identity-name-field">Name
+          <input id="identity-name-input" name="profileName" type="text" maxlength="80" autocomplete="name" placeholder="Enter your name" required>
+          <small>This name appears beside your profile picture.</small>
+        </label>
+      </div>
+      <footer class="dialog-footer">
+        <button class="text-action" type="button" data-identity-action="cancel">Cancel</button>
+        <button class="primary-action" type="submit">Save changes</button>
+      </footer>
+    </form>
+  </dialog>
 
   <dialog class="profile-dialog" id="profile-dialog" aria-labelledby="editor-title">
     <form method="dialog" id="profile-form">
