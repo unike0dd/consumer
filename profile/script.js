@@ -56,7 +56,17 @@ const photoSelect = document.querySelector("#photo-select");
 const photoRemove = document.querySelector("#photo-remove");
 const photoImage = document.querySelector("#profile-photo");
 const photoPlaceholder = document.querySelector("#photo-placeholder");
+const identityDialog = document.querySelector("#identity-dialog");
+const identityForm = document.querySelector("#identity-form");
+const identityEdit = document.querySelector("#identity-edit");
+const identityName = document.querySelector("#profile-name");
+const identityNameInput = document.querySelector("#identity-name-input");
+const identityPhotoPreview = document.querySelector("#identity-photo-preview");
+const identityPreviewPlaceholder = document.querySelector("#identity-preview-placeholder");
 let photoObjectUrl = "";
+let identityPreviewUrl = "";
+let pendingPhotoFile = null;
+let removePhotoRequested = false;
 let activeSection = "";
 let workingEntries = [];
 
@@ -103,6 +113,17 @@ async function writePhoto(blob) {
   });
 }
 
+async function writeIdentity(name) {
+  const db = await openDatabase();
+  const updatedAt = new Date().toISOString();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    transaction.objectStore(STORE).put({ section: "profile-identity", name, updatedAt });
+    transaction.oncomplete = () => resolve(updatedAt);
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
 async function deletePhoto() {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -121,8 +142,45 @@ async function refreshPhoto() {
   photoImage.src = photoObjectUrl;
   photoImage.hidden = !photo;
   photoPlaceholder.hidden = Boolean(photo);
+  return photo;
+}
+
+async function refreshIdentity() {
+  const records = await readAll();
+  const identity = records.find(item => item.section === "profile-identity");
+  identityName.textContent = identity?.name || "Your name";
+  return identity?.name || "";
+}
+
+function setIdentityPreview(source) {
+  identityPhotoPreview.src = source || "";
+  identityPhotoPreview.hidden = !source;
+  identityPreviewPlaceholder.hidden = Boolean(source);
+}
+
+async function openIdentityEditor() {
+  const records = await readAll();
+  const identity = records.find(item => item.section === "profile-identity");
+  const photo = records.find(item => item.section === "profile-photo")?.blob;
+  pendingPhotoFile = null;
+  removePhotoRequested = false;
+  identityNameInput.value = identity?.name || "";
   photoRemove.hidden = !photo;
-  photoSelect.textContent = photo ? "Replace picture" : "Upload picture";
+  photoSelect.textContent = photo ? "Change picture" : "Choose picture";
+  if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
+  identityPreviewUrl = photo ? URL.createObjectURL(photo) : "";
+  setIdentityPreview(identityPreviewUrl);
+  identityDialog.showModal();
+  identityNameInput.focus();
+}
+
+function closeIdentityEditor() {
+  identityDialog.close();
+  photoInput.value = "";
+  pendingPhotoFile = null;
+  removePhotoRequested = false;
+  if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
+  identityPreviewUrl = "";
 }
 
 const optionMarkup = (options, selected) => options.map(value =>
@@ -267,6 +325,10 @@ dialog.addEventListener("click", event => {
   if (event.target === dialog) closeEditor();
 });
 
+identityEdit.addEventListener("click", () => openIdentityEditor().catch(() => showToast("The identity editor could not be opened.")));
+identityDialog.addEventListener("click", event => {
+  if (event.target === identityDialog || event.target.closest('[data-identity-action="cancel"]')) closeIdentityEditor();
+});
 photoSelect.addEventListener("click", () => photoInput.click());
 photoInput.addEventListener("change", () => {
   const file = photoInput.files?.[0];
@@ -281,16 +343,39 @@ photoInput.addEventListener("change", () => {
     photoInput.value = "";
     return;
   }
-  writePhoto(file).then(() => Promise.all([refreshPhoto(), refreshSummary()])).then(() => {
-    showToast("Profile picture saved in this browser.");
-    photoInput.value = "";
-  }).catch(() => showToast("The profile picture could not be saved."));
+  pendingPhotoFile = file;
+  removePhotoRequested = false;
+  if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
+  identityPreviewUrl = URL.createObjectURL(file);
+  setIdentityPreview(identityPreviewUrl);
+  photoRemove.hidden = false;
+  photoSelect.textContent = "Change picture";
 });
 photoRemove.addEventListener("click", () => {
-  deletePhoto().then(() => Promise.all([refreshPhoto(), refreshSummary()])).then(() => {
-    showToast("Profile picture removed.");
-  }).catch(() => showToast("The profile picture could not be removed."));
+  pendingPhotoFile = null;
+  removePhotoRequested = true;
+  if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
+  identityPreviewUrl = "";
+  setIdentityPreview("");
+  photoRemove.hidden = true;
+  photoSelect.textContent = "Choose picture";
 });
-window.addEventListener("pagehide", () => { if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl); });
 
-Promise.all([refreshSummary(), refreshPhoto()]).catch(() => showToast("Saved profile information is temporarily unavailable."));
+identityForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!identityForm.reportValidity()) return;
+  const name = identityNameInput.value.trim();
+  if (!name) return;
+  const pictureChange = pendingPhotoFile ? writePhoto(pendingPhotoFile) : removePhotoRequested ? deletePhoto() : Promise.resolve();
+  Promise.all([writeIdentity(name), pictureChange]).then(() => Promise.all([refreshIdentity(), refreshPhoto(), refreshSummary()])).then(() => {
+    closeIdentityEditor();
+    showToast("Profile picture and name updated.");
+  }).catch(() => showToast("The profile identity could not be saved."));
+});
+
+window.addEventListener("pagehide", () => {
+  if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl);
+  if (identityPreviewUrl) URL.revokeObjectURL(identityPreviewUrl);
+});
+
+Promise.all([refreshSummary(), refreshPhoto(), refreshIdentity()]).catch(() => showToast("Saved profile information is temporarily unavailable."));
