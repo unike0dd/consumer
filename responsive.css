@@ -353,3 +353,12 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .primary-nav .nav{width:100%;font-size:14px}
   .side-bottom{display:block}
 }
+
+
+/* Mobile control stacking: drawer covers its launcher; expanded search covers the launcher. */
+@media(max-width:820px){
+  .side{z-index:3000}
+  .sidebar-backdrop{z-index:2900}
+  .sidebar-toggle{z-index:2000}
+  .search.search-open{z-index:3100}
+}
