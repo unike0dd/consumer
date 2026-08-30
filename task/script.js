@@ -220,5 +220,6 @@ resumeInput.addEventListener("change",()=>{
 
 renderAll();
 const taskRequest=new URLSearchParams(location.search).get("create")==="task";
-setOpenSection(taskRequest?"next-steps":"");
+const linkedSection=taskPanels.some(panel=>panel.id===location.hash.slice(1))?location.hash.slice(1):"";
+setOpenSection(taskRequest?"next-steps":linkedSection);
 if(taskRequest){createTaskDialog.showModal();createTaskForm.elements.title.focus()}
