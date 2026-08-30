@@ -1,10 +1,17 @@
 const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
 const CUSTOM_TASKS_KEY="gabo:consumer:custom-tasks:v1";
+const JOB_WORKFLOW_KEY="gabo:consumer:job-workflow:v1";
 const readNextStepState=()=>{try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}};
 const readCustomTasks=()=>{try{const tasks=JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)||"[]");return Array.isArray(tasks)?tasks:[]}catch{return []}};
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character]);
 let nextStepState=readNextStepState();
 const taskIsDone=id=>{const value=nextStepState[id];return Boolean(value&&typeof value==="object"?value.done:value)};
+const jobDirectory={operations:{title:"Operations Coordinator",company:"Casa Verde Market"},support:{title:"Customer Support Specialist",company:"Norte Studio"},assistant:{title:"Virtual Assistant",company:"Sol & Mar"},hr:{title:"HR Coordinator",company:"Andina Collective"}};
+const initialJobState={operations:{tracked:true,status:"Interview scheduled"},support:{tracked:true,status:"Under review"},assistant:{tracked:true,status:"Applied"},hr:{saved:true,status:"Saved"}};
+const readJobState=()=>{try{return {...structuredClone(initialJobState),...JSON.parse(localStorage.getItem(JOB_WORKFLOW_KEY)||"{}")} }catch{return structuredClone(initialJobState)}};
+const jobState=readJobState();
+const savedJobs=Object.entries(jobDirectory).filter(([id])=>jobState[id]?.saved);
+const trackedJobs=Object.entries(jobDirectory).filter(([id])=>jobState[id]?.tracked||jobState[id]?.applied);
 
 const dashboard={
   audience:"Workspace",
@@ -49,7 +56,7 @@ document.querySelector("#app").innerHTML=`
     <div class="content">
       <section class="welcome">
         <div><div class="welcome-meta"><p class="eyebrow">${dashboard.audience}</p><time id="workspace-clock" aria-label="Current date and time"></time></div><h1>${dashboard.greeting}</h1></div>
-        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="documents/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#tracker">View applications</a></div></nav>
+        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="documents/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#jobs">View applications</a></div></nav>
       </section>
       <div class="grid">
         <div class="main-stack">
@@ -62,6 +69,16 @@ document.querySelector("#app").innerHTML=`
         <aside class="right">
           <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><div class="heading-actions"><a class="heading-link" href="task/#next-steps">View tasks</a><a class="create-task-link" href="task/?create=task#next-steps">Create a Task</a></div></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${taskIsDone(t.id)?"done":""}" data-task="${escapeHtml(t.id)}"><label><input type="checkbox" ${taskIsDone(t.id)?"checked":""} aria-label="Mark ${escapeHtml(t.title)} done"><span><strong>${escapeHtml(t.title)}</strong><small><span aria-hidden="true">▣</span> ${escapeHtml(t.date)} · ${escapeHtml(t.time)}</small></span></label><button class="task-done" type="button" data-task-done="${escapeHtml(t.id)}" ${taskIsDone(t.id)?"disabled":""}>${taskIsDone(t.id)?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
         </aside>
+      </div>
+      <div class="dashboard-job-panels" aria-label="Saved jobs and application tracking">
+        <section class="panel career-panel">
+          <div class="heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div><a class="heading-link" href="task/#jobs">View Jobs</a></div>
+          <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
+        </section>
+        <section class="panel career-panel">
+          <div class="heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div><a class="heading-link" href="task/#jobs">View Tracker</a></div>
+          <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
+        </section>
       </div>
     </div>
   </section>
@@ -105,4 +122,4 @@ function updateTaskCenter(){
 function setTaskDone(id,done=true){const current=nextStepState[id];nextStepState[id]=current&&typeof current==="object"?{...current,done}:done;localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));updateTaskCenter()}
 document.querySelector(".tasks").addEventListener("click",event=>{const button=event.target.closest("[data-task-done]");if(button)setTaskDone(button.dataset.taskDone,true)});
 document.querySelectorAll(".tasks input").forEach(box=>box.addEventListener("change",()=>setTaskDone(box.closest("[data-task]").dataset.task,box.checked)));
-window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}if(event.key===CUSTOM_TASKS_KEY)location.reload()});
+window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}if(event.key===CUSTOM_TASKS_KEY||event.key===JOB_WORKFLOW_KEY)location.reload()});
