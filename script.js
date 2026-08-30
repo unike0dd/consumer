@@ -49,12 +49,14 @@ document.querySelector("#app").innerHTML=`
         <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="documents/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#tracker">View applications</a></div></nav>
       </section>
       <div class="grid">
-        <section class="panel activity">
-          <div class="heading"><div><p class="eyebrow">Application activity</p><h2>Your opportunities</h2></div><span class="count">${dashboard.rows.length} items</span></div>
-          <div class="rows">${dashboard.rows.map(r=>`<article data-search="${r.join(" ").toLowerCase()}"><i>♡</i><div><strong>${r[0]}</strong><small>${r[1]}</small></div>${r[2]==="Interview"?`<a class="status-link" href="task/#interviews">${r[2]}</a>`:`<em>${r[2]}</em>`}<b>${r[3]}</b></article>`).join("")}<p class="empty" hidden>No matching activity.</p></div>
-        </section>
-        <aside class="right">
+        <div class="main-stack">
           <section class="panel"><div class="heading"><div><p class="eyebrow">At a glance</p><h2>Career progress</h2></div></div><div class="progress">${dashboard.progress.map(p=>`<div><p><span>${p[0]}</span><b>${p[1]}%</b></p><div><i style="width:${p[1]}%"></i></div></div>`).join("")}</div></section>
+          <section class="panel activity">
+            <div class="heading"><div><p class="eyebrow">Application activity</p><h2>Your opportunities</h2></div><span class="count">${dashboard.rows.length} items</span></div>
+            <div class="rows">${dashboard.rows.map(r=>`<article data-search="${r.join(" ").toLowerCase()}"><i>♡</i><div><strong>${r[0]}</strong><small>${r[1]}</small></div>${r[2]==="Interview"?`<a class="status-link" href="task/#interviews">${r[2]}</a>`:`<em>${r[2]}</em>`}<b>${r[3]}</b></article>`).join("")}<p class="empty" hidden>No matching activity.</p></div>
+          </section>
+        </div>
+        <aside class="right">
           <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><a class="heading-link" href="task/#next-steps">View tasks</a></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${nextStepState[t.id]?"done":""}" data-task="${t.id}"><label><input type="checkbox" ${nextStepState[t.id]?"checked":""} aria-label="Mark ${t.title} done"><span><strong>${t.title}</strong><small><span aria-hidden="true">▣</span> ${t.date} · ${t.time}</small></span></label><button class="task-done" type="button" data-task-done="${t.id}" ${nextStepState[t.id]?"disabled":""}>${nextStepState[t.id]?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
         </aside>
       </div>
