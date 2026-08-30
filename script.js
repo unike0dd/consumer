@@ -56,7 +56,7 @@ document.querySelector("#app").innerHTML=`
     <div class="content">
       <section class="welcome">
         <div><div class="welcome-meta"><p class="eyebrow">${dashboard.audience}</p><time id="workspace-clock" aria-label="Current date and time"></time></div><h1>${dashboard.greeting}</h1></div>
-        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="profile/">Update profile</a><a href="documents/">Upload résumé</a><a href="task/#jobs">Find opportunities</a><a href="task/#jobs">View applications</a></div></nav>
+        <nav class="quick-actions" aria-label="Quick actions"><span>Quick actions</span><div><a href="documents/">Upload résumé</a><a href="documents/">Documents</a><a href="task/#jobs">Jobs</a></div></nav>
       </section>
       <div class="grid">
         <div class="main-stack">
