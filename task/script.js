@@ -223,6 +223,8 @@ resumeInput.addEventListener("change",()=>{
 
 renderAll();
 const taskRequest=new URLSearchParams(location.search).get("create")==="task";
+const requestedJob=new URLSearchParams(location.search).get("job");
 const linkedSection=taskPanels.some(panel=>panel.id===location.hash.slice(1))?location.hash.slice(1):"";
-setOpenSection(taskRequest?"next-steps":linkedSection);
+setOpenSection(taskRequest?"next-steps":requestedJob&&jobs[requestedJob]?"jobs":linkedSection);
 if(taskRequest){createTaskDialog.showModal();createTaskForm.elements.title.focus()}
+else if(requestedJob&&jobs[requestedJob])openJob(requestedJob);

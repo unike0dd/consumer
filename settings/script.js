@@ -17,9 +17,6 @@ function readSettings() {
 function collectSettings() {
   const data = new FormData(form);
   return {
-    phone: String(data.get("phone") || "").trim(),
-    recoveryEmail: String(data.get("recoveryEmail") || "").trim(),
-    username: String(data.get("username") || "").trim(),
     contactFirstName: String(data.get("contactFirstName") || "").trim(),
     contactLastName: String(data.get("contactLastName") || "").trim(),
     contactAddress: String(data.get("contactAddress") || "").trim(),
@@ -66,17 +63,6 @@ form.addEventListener("submit", event => {
   if (!form.reportValidity()) return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(collectSettings()));
   showToast("Settings saved in this browser.");
-});
-
-document.querySelector("#change-username").addEventListener("click", () => {
-  const username = form.elements.namedItem("username");
-  if (!username.reportValidity() || !username.value.trim()) return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(collectSettings()));
-  showToast("Username preference saved. Secure username sign-in activates with authenticated services.");
-});
-
-document.querySelectorAll(".secure-action").forEach(button => {
-  button.addEventListener("click", () => showToast(`${button.dataset.feature} activates when secure account services are reconnected.`));
 });
 
 restoreSettings();

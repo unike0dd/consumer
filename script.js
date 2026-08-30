@@ -37,7 +37,6 @@ document.querySelector("#app").innerHTML=`
       <a class="nav" href="profile/"><span class="nav-mark" aria-hidden="true"></span>My Profile</a>
       <a class="nav" href="task/"><span class="nav-mark" aria-hidden="true"></span>Task</a>
       <div class="nav-group">
-        <a class="nav" href="#messages"><span class="nav-mark" aria-hidden="true"></span>Messages</a>
         <a class="nav" href="documents/"><span class="nav-mark" aria-hidden="true"></span>Documents</a>
       </div>
       <div class="nav-group">
@@ -71,11 +70,11 @@ document.querySelector("#app").innerHTML=`
           <div class="dashboard-job-panels" aria-label="Saved jobs and application tracking">
             <section class="panel career-panel">
               <div class="heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div><a class="heading-link" href="task/#jobs">View Jobs</a></div>
-              <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
+              <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/?job=${encodeURIComponent(id)}#jobs"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
             </section>
             <section class="panel career-panel">
               <div class="heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div><a class="heading-link" href="task/#jobs">View Tracker</a></div>
-              <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
+              <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/?job=${encodeURIComponent(id)}#jobs"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
             </section>
           </div>
         </aside>
