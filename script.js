@@ -1,29 +1,8 @@
-const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
-const CUSTOM_TASKS_KEY="gabo:consumer:custom-tasks:v1";
-const JOB_WORKFLOW_KEY="gabo:consumer:job-workflow:v1";
-const readNextStepState=()=>{try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}};
-const readCustomTasks=()=>{try{const tasks=JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)||"[]");return Array.isArray(tasks)?tasks:[]}catch{return []}};
-const escapeHtml=value=>String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character]);
-let nextStepState=readNextStepState();
-const taskIsDone=id=>{const value=nextStepState[id];return Boolean(value&&typeof value==="object"?value.done:value)};
-const jobDirectory={operations:{title:"Operations Coordinator",company:"Casa Verde Market"},support:{title:"Customer Support Specialist",company:"Norte Studio"},assistant:{title:"Virtual Assistant",company:"Sol & Mar"},hr:{title:"HR Coordinator",company:"Andina Collective"}};
-const initialJobState={operations:{tracked:true,status:"Interview scheduled"},support:{tracked:true,status:"Under review"},assistant:{tracked:true,status:"Applied"},hr:{saved:true,status:"Saved"}};
-const readJobState=()=>{try{return {...structuredClone(initialJobState),...JSON.parse(localStorage.getItem(JOB_WORKFLOW_KEY)||"{}")} }catch{return structuredClone(initialJobState)}};
-const jobState=readJobState();
-const savedJobs=Object.entries(jobDirectory).filter(([id])=>jobState[id]?.saved);
-const trackedJobs=Object.entries(jobDirectory).filter(([id])=>jobState[id]?.tracked||jobState[id]?.applied);
-
 const dashboard={
   audience:"Workspace",
   greeting:"Hello, Gabriel.",
   progress:[["Profile completeness",85],["Application follow-up",72],["Career checklist",68]],
-  rows:[["Operations Coordinator","Casa Verde Market","Interview","Tuesday"],["Customer Support Specialist","Norte Studio","Under review","Updated today"],["Virtual Assistant","Sol & Mar","Applied","Aug 20"],["HR Coordinator","Andina Collective","Saved","New match"]],
-  tasks:[
-    {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM"},
-    {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
-    {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
-    {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
-  ].concat(readCustomTasks())
+  rows:[["Operations Coordinator","Casa Verde Market","Interview","Tuesday"],["Customer Support Specialist","Norte Studio","Under review","Updated today"],["Virtual Assistant","Sol & Mar","Applied","Aug 20"],["HR Coordinator","Andina Collective","Saved","New match"]]
 };
 
 document.title="Gabo Services | Workspace";
@@ -66,17 +45,12 @@ document.querySelector("#app").innerHTML=`
           </section>
         </div>
         <aside class="right">
-          <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><div class="heading-actions"><a class="heading-link" href="task/#next-steps">View tasks</a><a class="create-task-link" href="task/?create=task#next-steps">Create a Task</a></div></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${taskIsDone(t.id)?"done":""}" data-task="${escapeHtml(t.id)}"><label><input type="checkbox" ${taskIsDone(t.id)?"checked":""} aria-label="Mark ${escapeHtml(t.title)} done"><span><strong>${escapeHtml(t.title)}</strong><small><span aria-hidden="true">▣</span> ${escapeHtml(t.date)} · ${escapeHtml(t.time)}</small></span></label><button class="task-done" type="button" data-task-done="${escapeHtml(t.id)}" ${taskIsDone(t.id)?"disabled":""}>${taskIsDone(t.id)?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
-          <div class="dashboard-job-panels" aria-label="Saved jobs and application tracking">
-            <section class="panel career-panel">
-              <div class="heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div><a class="heading-link" href="task/#jobs">View Jobs</a></div>
-              <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/?job=${encodeURIComponent(id)}#jobs"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
-            </section>
-            <section class="panel career-panel">
-              <div class="heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div><a class="heading-link" href="task/#jobs">View Tracker</a></div>
-              <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/?job=${encodeURIComponent(id)}#jobs"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
-            </section>
-          </div>
+          <section class="panel task-center"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div></div><nav class="task-center-links" aria-label="Task center options">
+            <a href="task/#next-steps"><span><strong>Create a Task</strong></span><b>View tasks</b></a>
+            <a href="task/#next-steps"><span><small>Application activity</small><strong>Your opportunities</strong></span><b>View Applications</b></a>
+            <a href="task/#next-steps"><span><strong>Saved Jobs</strong></span><b>View Jobs</b></a>
+            <a href="task/#next-steps"><span><strong>Jobs Tracker</strong></span><b>View Trackers</b></a>
+          </nav></section>
         </aside>
       </div>
     </div>
@@ -108,17 +82,3 @@ document.addEventListener("click",event=>{if(adjustableScreen.matches&&!search.c
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&search.classList.contains("search-open")){setSearchOpen(false);searchToggle.focus()}});
 adjustableScreen.addEventListener?.("change",event=>{if(!event.matches)setSearchOpen(false)});
 input.addEventListener("input",()=>{let shown=0;articles.forEach(row=>{const match=row.dataset.search.includes(input.value.toLowerCase());row.hidden=!match;if(match)shown++});empty.hidden=shown!==0;count.textContent=`${shown} items`});
-function updateTaskCenter(){
-  document.querySelectorAll("[data-task]").forEach(item=>{
-    const done=taskIsDone(item.dataset.task);
-    item.classList.toggle("done",done);
-    item.querySelector("input").checked=done;
-    const button=item.querySelector(".task-done");
-    button.disabled=done;
-    button.textContent=done?"DONE ✓":"DONE";
-  });
-}
-function setTaskDone(id,done=true){const current=nextStepState[id];nextStepState[id]=current&&typeof current==="object"?{...current,done}:done;localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));updateTaskCenter()}
-document.querySelector(".tasks").addEventListener("click",event=>{const button=event.target.closest("[data-task-done]");if(button)setTaskDone(button.dataset.taskDone,true)});
-document.querySelectorAll(".tasks input").forEach(box=>box.addEventListener("change",()=>setTaskDone(box.closest("[data-task]").dataset.task,box.checked)));
-window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}if(event.key===CUSTOM_TASKS_KEY||event.key===JOB_WORKFLOW_KEY)location.reload()});
