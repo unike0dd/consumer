@@ -82,7 +82,8 @@ button,a,input,select,textarea{max-width:100%}
 .status-link:hover,.status-link:focus-visible{text-decoration:underline}
 .heading-link{color:var(--blue);font-size:12px;font-weight:800;text-decoration:none}
 .heading-link:hover,.heading-link:focus-visible{text-decoration:underline}
-.heading-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.create-task-link{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 11px;border:1px solid var(--green);border-radius:8px;background:var(--green);color:white;font-size:10px;font-weight:900;text-decoration:none}.create-task-link:hover,.create-task-link:focus-visible{background:#246a59;outline:0}.create-task-link:focus-visible{box-shadow:0 0 0 3px #d6a13c55}
+.heading-actions{display:grid;justify-items:stretch;gap:8px;min-width:108px;margin-left:auto;text-align:center}.heading-actions .heading-link{display:block}.create-task-link{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 11px;border:1px solid var(--green);border-radius:8px;background:var(--green);color:white;font-size:10px;font-weight:900;text-decoration:none}.create-task-link:hover,.create-task-link:focus-visible{background:#246a59;outline:0}.create-task-link:focus-visible{box-shadow:0 0 0 3px #d6a13c55}
+@media(max-width:420px){.right .heading{align-items:flex-start}.heading-actions{width:100%;justify-items:end;text-align:right}.heading-actions .heading-link,.heading-actions .create-task-link{width:min(150px,100%)}}
 
 /* Shared dashboard and Task-page completion control */
 .tasks .task-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:2px 8px}
