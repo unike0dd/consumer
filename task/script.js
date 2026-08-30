@@ -1,5 +1,6 @@
 const STATE_KEY="gabo:consumer:job-workflow:v1";
 const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
+const CUSTOM_TASKS_KEY="gabo:consumer:custom-tasks:v1";
 const DB_NAME="gabo-consumer-career";
 const DB_VERSION=1;
 const STORE="applications";
@@ -9,12 +10,15 @@ const jobs={
   assistant:{id:"assistant",title:"Virtual Assistant",company:"Sol & Mar",location:"Remote",type:"Contract",market:true,description:"Provide dependable remote administrative support, organize information, coordinate calendars and follow-up, and help leaders maintain focus on priority work.",responsibilities:["Coordinate calendars, meetings, reminders, and action items.","Prepare documents and organize business information.","Track assignments and communicate progress clearly.","Support routine research and operational administration."],requirements:["Experience in administrative, executive, or virtual assistance.","Strong organization, discretion, and written communication.","Reliable access to a professional remote-work environment."]},
   hr:{id:"hr",title:"HR Coordinator",company:"Andina Collective",location:"Hybrid",type:"Full-time",market:false,description:"Support structured people operations through accurate coordination, candidate communication, record management, and dependable follow-up across the employee lifecycle.",responsibilities:["Coordinate interviews, documentation, and onboarding actions.","Maintain accurate candidate and employee records.","Support managers with timely status communication."],requirements:["Experience supporting HR, recruiting, or administrative workflows.","Confidentiality, accuracy, and professional communication."]}
 };
-const nextSteps=[
+const defaultTasks=[
   {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM"},
   {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
   {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
   {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
 ];
+function readCustomTasks(){try{const tasks=JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)||"[]");return Array.isArray(tasks)?tasks:[]}catch{return []}}
+let customTasks=readCustomTasks();
+const allTasks=()=>[...defaultTasks,...customTasks];
 const initialState={operations:{tracked:true,status:"Interview scheduled",interviewDate:"2026-09-01",interviewTime:"10:00"},support:{tracked:true,status:"Under review"},assistant:{tracked:true,status:"Applied"},hr:{saved:true,status:"Saved"}};
 const jobList=document.querySelector("#job-list");
 const savedList=document.querySelector("#saved-list");
@@ -26,6 +30,8 @@ const nextStepList=document.querySelector("#next-step-list");
 const resumeInput=document.querySelector("#resume-input");
 const interviewForm=document.querySelector("#interview-form");
 const archivedTaskToggle=document.querySelector("#archived-task-toggle");
+const createTaskDialog=document.querySelector("#create-task-dialog");
+const createTaskForm=document.querySelector("#create-task-form");
 let state=readState();
 let nextStepState=readNextStepState();
 let activeJob="";
@@ -52,6 +58,7 @@ function jobState(id){return state[id]||(state[id]={})}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character])}
 function showToast(message){toast.textContent=message;toast.hidden=false;clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>{toast.hidden=true},3000)}
 function saveNextStepState(){localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState))}
+function saveCustomTasks(){localStorage.setItem(CUSTOM_TASKS_KEY,JSON.stringify(customTasks))}
 function taskActionIcon(action){
   if(action==="archive")return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM3 4h18v3H3zM9 11h6"/></svg>';
   if(action==="focus")return '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5h10v15H5V9M9 5v4H5M9 5 5 9M9 13h6M9 16h4"/></svg>';
@@ -68,10 +75,11 @@ function actionButtons(job){
 }
 
 function renderNextSteps(){
-  const visibleTasks=nextSteps.filter(task=>showArchivedTasks||!nextStepState[task.id]?.archived);
-  const activeTasks=nextSteps.filter(task=>!nextStepState[task.id]?.archived);
+  const tasks=allTasks();
+  const visibleTasks=tasks.filter(task=>showArchivedTasks||!nextStepState[task.id]?.archived);
+  const activeTasks=tasks.filter(task=>!nextStepState[task.id]?.archived);
   const complete=activeTasks.filter(task=>nextStepState[task.id]?.done).length;
-  const archivedCount=nextSteps.length-activeTasks.length;
+  const archivedCount=tasks.length-activeTasks.length;
   document.querySelector("#next-step-count").textContent=`${complete} of ${activeTasks.length} completed`;
   archivedTaskToggle.hidden=!archivedCount;
   archivedTaskToggle.textContent=showArchivedTasks?"Hide archived":`Archived tasks (${archivedCount})`;
@@ -157,11 +165,22 @@ document.addEventListener("click",event=>{
     if(action==="reschedule"){const form=document.querySelector(`[data-reschedule-form="${id}"]`);form.hidden=!form.hidden;if(!form.hidden)form.elements.date.focus();return}
   }
   if(event.target.closest("#archived-task-toggle")){showArchivedTasks=!showArchivedTasks;renderNextSteps();return}
+  if(event.target.closest("[data-create-task]")){createTaskForm.reset();createTaskDialog.showModal();createTaskForm.elements.title.focus();return}
+  if(event.target.closest("[data-close-create-task]")){createTaskDialog.close();return}
   const open=event.target.closest("[data-open-job]");if(open){openJob(open.dataset.openJob);return}
   const action=event.target.closest("[data-job-action]");if(action){if(action.dataset.jobAction==="interview"){openJob(action.dataset.job);interviewForm.hidden=false;document.querySelector("#interview-date").focus()}else toggleState(action.dataset.job,action.dataset.jobAction)}
 });
 
 document.addEventListener("submit",event=>{
+  if(event.target===createTaskForm){
+    event.preventDefault();
+    const data=new FormData(createTaskForm),title=String(data.get("title")||"").trim(),date=String(data.get("date")||""),time=String(data.get("time")||"");
+    if(!title||!date||!time){showToast("Enter a task name, date, and time.");return}
+    const scheduled=new Date(`${date}T${time}`);
+    const id=`custom-${globalThis.crypto?.randomUUID?.()||Date.now()}`;
+    customTasks.push({id,title,date:new Intl.DateTimeFormat(undefined,{weekday:"long",month:"short",day:"numeric"}).format(scheduled),time:new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(scheduled)});
+    saveCustomTasks();renderNextSteps();createTaskDialog.close();showToast("Task created.");return;
+  }
   const form=event.target.closest("[data-reschedule-form]");if(!form)return;
   event.preventDefault();
   const id=form.dataset.rescheduleForm,date=form.elements.date.value,time=form.elements.time.value;
@@ -171,7 +190,7 @@ document.addEventListener("submit",event=>{
   nextStepState[id]={...(nextStepState[id]||{}),date:formattedDate,time:formattedTime};saveNextStepState();renderNextSteps();showToast("Task re-scheduled.");
 });
 
-window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();renderNextSteps()}});
+window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();renderNextSteps()}if(event.key===CUSTOM_TASKS_KEY){customTasks=readCustomTasks();renderNextSteps()}});
 
 dialog.querySelector(".dialog-close").addEventListener("click",()=>dialog.close());
 dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close()});
@@ -200,4 +219,6 @@ resumeInput.addEventListener("change",()=>{
 });
 
 renderAll();
-setOpenSection("");
+const taskRequest=new URLSearchParams(location.search).get("create")==="task";
+setOpenSection(taskRequest?"next-steps":"");
+if(taskRequest){createTaskDialog.showModal();createTaskForm.elements.title.focus()}
