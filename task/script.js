@@ -11,10 +11,10 @@ const jobs={
   hr:{id:"hr",title:"HR Coordinator",company:"Andina Collective",location:"Hybrid",type:"Full-time",market:false,description:"Support structured people operations through accurate coordination, candidate communication, record management, and dependable follow-up across the employee lifecycle.",responsibilities:["Coordinate interviews, documentation, and onboarding actions.","Maintain accurate candidate and employee records.","Support managers with timely status communication."],requirements:["Experience supporting HR, recruiting, or administrative workflows.","Confidentiality, accuracy, and professional communication."]}
 };
 const defaultTasks=[
-  {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM"},
-  {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
-  {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
-  {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
+  {id:"interview-operations",title:"Prepare for Operations Coordinator interview",date:"Tuesday",time:"10:00 AM",href:"#interviews"},
+  {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM",href:"../profile/#profile-sections"},
+  {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM",href:"../documents/"},
+  {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM",href:"#jobs"}
 ];
 function readCustomTasks(){try{const tasks=JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)||"[]");return Array.isArray(tasks)?tasks:[]}catch{return []}}
 let customTasks=readCustomTasks();
@@ -86,7 +86,8 @@ function renderNextSteps(){
   nextStepList.innerHTML=visibleTasks.map(task=>{
     const taskState=nextStepState[task.id]||{};
     const date=taskState.date||task.date,time=taskState.time||task.time;
-    return `<article class="next-step ${taskState.done?"done":""} ${taskState.focused?"focused":""}" data-next-step="${task.id}"><div><button class="task-title-button" type="button" data-next-action="focus" data-task="${task.id}" aria-pressed="${Boolean(taskState.focused)}">${escapeHtml(task.title)}</button><small><span aria-hidden="true">▣</span> ${escapeHtml(date)} · ${escapeHtml(time)}${taskState.archived?" · Archived":""}</small></div><button class="next-step-action" type="button" data-next-action="archive" data-task="${task.id}">${taskActionIcon("archive")}<span>${taskState.archived?"Restore":"Archive"}</span></button><button class="next-step-action" type="button" data-next-action="focus" data-task="${task.id}" aria-pressed="${Boolean(taskState.focused)}">${taskActionIcon("focus")}<span>Task</span></button><button class="next-step-action" type="button" data-next-action="reschedule" data-task="${task.id}">${taskActionIcon("reschedule")}<span>Re-schedule</span></button><button class="next-step-toggle" type="button" data-toggle-next-step="${task.id}">${taskState.done?"Reopen":"Mark Done"}</button><form class="reschedule-editor" data-reschedule-form="${task.id}" hidden><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><button type="submit">Save schedule</button></form></article>`;
+    const titleControl=task.href?`<a class="task-title-link" href="${task.href}" data-task-destination>${escapeHtml(task.title)}</a>`:`<button class="task-title-link" type="button" data-next-action="focus" data-task="${task.id}">${escapeHtml(task.title)}</button>`;
+    return `<article class="next-step ${taskState.done?"done":""} ${taskState.focused?"focused":""}" data-next-step="${task.id}"><div>${titleControl}<small><span aria-hidden="true">▣</span> ${escapeHtml(date)} · ${escapeHtml(time)}${taskState.archived?" · Archived":""}</small></div><button class="next-step-action" type="button" data-next-action="archive" data-task="${task.id}">${taskActionIcon("archive")}<span>${taskState.archived?"Restore":"Archive"}</span></button><button class="next-step-action" type="button" data-next-action="focus" data-task="${task.id}" aria-pressed="${Boolean(taskState.focused)}">${taskActionIcon("focus")}<span>Task</span></button><button class="next-step-action" type="button" data-next-action="reschedule" data-task="${task.id}">${taskActionIcon("reschedule")}<span>Re-schedule</span></button><button class="next-step-toggle" type="button" data-toggle-next-step="${task.id}">${taskState.done?"Reopen":"Mark Done"}</button><form class="reschedule-editor" data-reschedule-form="${task.id}" hidden><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><button type="submit">Save schedule</button></form></article>`;
   }).join("");
 }
 
@@ -157,6 +158,8 @@ function toggleState(id,action){
 document.addEventListener("click",event=>{
   const sectionToggle=event.target.closest(".section-toggle");
   if(sectionToggle){event.preventDefault();const sectionId=sectionToggle.dataset.sectionTarget;setOpenSection(sectionToggle.getAttribute("aria-expanded")==="true"?"":sectionId);return}
+  const taskDestination=event.target.closest("[data-task-destination]");
+  if(taskDestination&&taskDestination.hash&&taskDestination.pathname===location.pathname){event.preventDefault();setOpenSection(taskDestination.hash.slice(1));return}
   const nextStep=event.target.closest("[data-toggle-next-step]");if(nextStep){const id=nextStep.dataset.toggleNextStep;nextStepState[id]={...(nextStepState[id]||{}),done:!nextStepState[id]?.done};saveNextStepState();renderNextSteps();showToast(nextStepState[id].done?"Task marked done.":"Task reopened.");return}
   const taskAction=event.target.closest("[data-next-action]");if(taskAction){
     const id=taskAction.dataset.task,action=taskAction.dataset.nextAction,current=nextStepState[id]||{};
