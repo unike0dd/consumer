@@ -7,7 +7,7 @@ a{color:inherit}
 .profile-page{min-height:100vh;padding-bottom:72px}
 .profile-header{display:flex;align-items:center;justify-content:space-between;min-height:66px;padding:0 clamp(28px,4vw,52px);border-bottom:1px solid var(--line)}
 .brand-dark{color:var(--green);text-decoration:none;font:24px Georgia,serif}
-.back-link{color:var(--blue);font-size:12px;font-weight:800;text-decoration:none}
+.back-link{color:var(--blue);font-size:16px;font-weight:800;text-decoration:none}
 .profile-hero{display:grid;grid-template-columns:minmax(340px,.9fr) minmax(380px,1.1fr);align-items:end;gap:48px;width:min(784px,calc(100% - 44px));margin:auto;padding:24px 0 34px}
 .profile-identity{display:grid;grid-template-columns:164px minmax(0,1fr);align-items:center;gap:26px}
 .photo-uploader{display:grid;justify-items:center}

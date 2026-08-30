@@ -4,7 +4,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{min-width:0;margin:0;overflow-x:hidden;background:var(--cream);color:var(--deep);font-family:var(--font)}
 .jobs-header{display:flex;align-items:center;justify-content:space-between;min-height:88px;padding:0 clamp(20px,5vw,72px);border-bottom:1px solid var(--line);background:#fbf8f1ee}
 .brand{color:var(--green);font:clamp(25px,2.4vw,34px)/1 Georgia,serif;text-decoration:none}
-.back-link{color:var(--blue);font-weight:800;text-decoration:none}
+.back-link{color:var(--blue);font-size:16px;font-weight:800;text-decoration:none}
 .back-link:hover,.back-link:focus-visible{text-decoration:underline}
 .jobs-page{width:min(1560px,calc(100% - 2 * clamp(18px,4vw,64px)));margin:auto;padding:clamp(42px,5vw,76px) 0 80px}
 .jobs-hero{max-width:900px;margin-bottom:clamp(30px,4vw,52px)}
