@@ -1,6 +1,10 @@
 const NEXT_STEPS_KEY="gabo:consumer:next-steps:v1";
+const CUSTOM_TASKS_KEY="gabo:consumer:custom-tasks:v1";
 const readNextStepState=()=>{try{return JSON.parse(localStorage.getItem(NEXT_STEPS_KEY)||"{}")}catch{return {}}};
+const readCustomTasks=()=>{try{const tasks=JSON.parse(localStorage.getItem(CUSTOM_TASKS_KEY)||"[]");return Array.isArray(tasks)?tasks:[]}catch{return []}};
+const escapeHtml=value=>String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[character]);
 let nextStepState=readNextStepState();
+const taskIsDone=id=>{const value=nextStepState[id];return Boolean(value&&typeof value==="object"?value.done:value)};
 
 const dashboard={
   audience:"Workspace",
@@ -12,7 +16,7 @@ const dashboard={
     {id:"profile-summary",title:"Update professional summary",date:"Today",time:"4:30 PM"},
     {id:"resume-upload",title:"Upload latest résumé",date:"Tomorrow",time:"9:00 AM"},
     {id:"review-matches",title:"Review three new matches",date:"Friday",time:"2:00 PM"}
-  ]
+  ].concat(readCustomTasks())
 };
 
 document.title="Gabo Services | Workspace";
@@ -56,7 +60,7 @@ document.querySelector("#app").innerHTML=`
           </section>
         </div>
         <aside class="right">
-          <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><a class="heading-link" href="task/#next-steps">View tasks</a></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${nextStepState[t.id]?"done":""}" data-task="${t.id}"><label><input type="checkbox" ${nextStepState[t.id]?"checked":""} aria-label="Mark ${t.title} done"><span><strong>${t.title}</strong><small><span aria-hidden="true">▣</span> ${t.date} · ${t.time}</small></span></label><button class="task-done" type="button" data-task-done="${t.id}" ${nextStepState[t.id]?"disabled":""}>${nextStepState[t.id]?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
+          <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><div class="heading-actions"><a class="heading-link" href="task/#next-steps">View tasks</a><a class="create-task-link" href="task/?create=task#next-steps">Create a Task</a></div></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${taskIsDone(t.id)?"done":""}" data-task="${escapeHtml(t.id)}"><label><input type="checkbox" ${taskIsDone(t.id)?"checked":""} aria-label="Mark ${escapeHtml(t.title)} done"><span><strong>${escapeHtml(t.title)}</strong><small><span aria-hidden="true">▣</span> ${escapeHtml(t.date)} · ${escapeHtml(t.time)}</small></span></label><button class="task-done" type="button" data-task-done="${escapeHtml(t.id)}" ${taskIsDone(t.id)?"disabled":""}>${taskIsDone(t.id)?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
         </aside>
       </div>
     </div>
@@ -90,7 +94,7 @@ adjustableScreen.addEventListener?.("change",event=>{if(!event.matches)setSearch
 input.addEventListener("input",()=>{let shown=0;articles.forEach(row=>{const match=row.dataset.search.includes(input.value.toLowerCase());row.hidden=!match;if(match)shown++});empty.hidden=shown!==0;count.textContent=`${shown} items`});
 function updateTaskCenter(){
   document.querySelectorAll("[data-task]").forEach(item=>{
-    const done=Boolean(nextStepState[item.dataset.task]);
+    const done=taskIsDone(item.dataset.task);
     item.classList.toggle("done",done);
     item.querySelector("input").checked=done;
     const button=item.querySelector(".task-done");
@@ -98,7 +102,7 @@ function updateTaskCenter(){
     button.textContent=done?"DONE ✓":"DONE";
   });
 }
-function setTaskDone(id,done=true){nextStepState[id]=done;localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));updateTaskCenter()}
+function setTaskDone(id,done=true){const current=nextStepState[id];nextStepState[id]=current&&typeof current==="object"?{...current,done}:done;localStorage.setItem(NEXT_STEPS_KEY,JSON.stringify(nextStepState));updateTaskCenter()}
 document.querySelector(".tasks").addEventListener("click",event=>{const button=event.target.closest("[data-task-done]");if(button)setTaskDone(button.dataset.taskDone,true)});
 document.querySelectorAll(".tasks input").forEach(box=>box.addEventListener("change",()=>setTaskDone(box.closest("[data-task]").dataset.task,box.checked)));
-window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}});
+window.addEventListener("storage",event=>{if(event.key===NEXT_STEPS_KEY){nextStepState=readNextStepState();updateTaskCenter()}if(event.key===CUSTOM_TASKS_KEY)location.reload()});

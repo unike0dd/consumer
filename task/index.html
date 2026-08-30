@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Tasks | Gabo Services</title>
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
   <link rel="stylesheet" href="../responsive.css?v=5">
   <link rel="stylesheet" href="../screens/adaptive.css?v=1">
 </head>
@@ -19,14 +19,14 @@
       </div>
     </section>
     <nav class="section-nav" aria-label="Task sections">
-      <a class="section-toggle" href="#next-steps" data-section-target="next-steps" aria-controls="next-steps" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg><span>Next Steps</span></a>
+      <a class="section-toggle" href="#next-steps" data-section-target="next-steps" aria-controls="next-steps" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3.5 6l1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></svg><span>Tasks</span></a>
       <a class="section-toggle" href="#jobs" data-section-target="jobs" aria-controls="jobs" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h16v11H4zM9 8V5h6v3M4 12h16M10 12v2h4v-2"/></svg><span>Jobs</span></a>
       <a class="section-toggle" href="#interviews" data-section-target="interviews" aria-controls="interviews" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4v3M19 4v3M4 8h16v12H4zM8 12h3M13 12h3M8 16h3"/></svg><span>Interviews</span></a>
     </nav>
 
     <div class="task-grid">
       <section class="task-card task-card-wide" id="next-steps" data-task-panel hidden>
-        <div class="card-heading"><div><p class="eyebrow">Task center</p><h2>Next Steps</h2></div><div class="task-summary"><button id="archived-task-toggle" type="button" hidden></button><span id="next-step-count">0 completed</span></div></div>
+        <div class="card-heading"><div><p class="eyebrow">Task center</p><h2>Tasks</h2></div><div class="task-summary"><button id="archived-task-toggle" type="button" hidden></button><span id="next-step-count">0 completed</span><button class="create-task-button" type="button" data-create-task>Create a Task</button></div></div>
         <div class="next-step-list" id="next-step-list"></div>
       </section>
       <section class="task-card task-card-wide" id="jobs" data-task-panel hidden>
@@ -83,7 +83,17 @@
       </div>
     </article>
   </dialog>
-  <script src="script.js?v=5" defer></script>
+  <dialog class="create-task-dialog" id="create-task-dialog" aria-labelledby="create-task-title">
+    <form id="create-task-form" method="dialog">
+      <header><div><p class="eyebrow">Task center</p><h2 id="create-task-title">Create a Task</h2></div><button class="dialog-close" type="button" data-close-create-task aria-label="Close task form">×</button></header>
+      <div class="create-task-fields">
+        <label>Task name<input name="title" type="text" maxlength="120" placeholder="Example: Prepare for interview" required></label>
+        <div><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label></div>
+        <div class="create-task-actions"><button type="button" data-close-create-task>Cancel</button><button class="primary-action" type="submit">Save Task</button></div>
+      </div>
+    </form>
+  </dialog>
+  <script src="script.js?v=6" defer></script>
   <script src="../screens/adaptive.js?v=1" defer></script>
 </body>
 </html>
