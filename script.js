@@ -68,17 +68,17 @@ document.querySelector("#app").innerHTML=`
         </div>
         <aside class="right">
           <section class="panel"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div><div class="heading-actions"><a class="heading-link" href="task/#next-steps">View tasks</a><a class="create-task-link" href="task/?create=task#next-steps">Create a Task</a></div></div><div class="tasks">${dashboard.tasks.map(t=>`<article class="task-item ${taskIsDone(t.id)?"done":""}" data-task="${escapeHtml(t.id)}"><label><input type="checkbox" ${taskIsDone(t.id)?"checked":""} aria-label="Mark ${escapeHtml(t.title)} done"><span><strong>${escapeHtml(t.title)}</strong><small><span aria-hidden="true">▣</span> ${escapeHtml(t.date)} · ${escapeHtml(t.time)}</small></span></label><button class="task-done" type="button" data-task-done="${escapeHtml(t.id)}" ${taskIsDone(t.id)?"disabled":""}>${taskIsDone(t.id)?"DONE ✓":"DONE"}</button></article>`).join("")}</div></section>
+          <div class="dashboard-job-panels" aria-label="Saved jobs and application tracking">
+            <section class="panel career-panel">
+              <div class="heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div><a class="heading-link" href="task/#jobs">View Jobs</a></div>
+              <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
+            </section>
+            <section class="panel career-panel">
+              <div class="heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div><a class="heading-link" href="task/#jobs">View Tracker</a></div>
+              <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
+            </section>
+          </div>
         </aside>
-      </div>
-      <div class="dashboard-job-panels" aria-label="Saved jobs and application tracking">
-        <section class="panel career-panel">
-          <div class="heading"><div><p class="eyebrow">Your shortlist</p><h2>Saved Jobs</h2></div><a class="heading-link" href="task/#jobs">View Jobs</a></div>
-          <div class="career-list">${savedJobs.length?savedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><span><strong>${escapeHtml(job.title)}</strong><small>${escapeHtml(job.company)}</small></span><b>Saved</b></a>`).join(""):`<p>No saved jobs yet.</p>`}</div>
-        </section>
-        <section class="panel career-panel">
-          <div class="heading"><div><p class="eyebrow">Application stages</p><h2>Jobs Tracker</h2></div><a class="heading-link" href="task/#jobs">View Tracker</a></div>
-          <div class="career-list">${trackedJobs.length?trackedJobs.map(([id,job])=>`<a href="task/#jobs" data-job-summary="${escapeHtml(id)}"><strong>${escapeHtml(job.title)}</strong><b>${escapeHtml(jobState[id]?.status||"Tracked")}</b></a>`).join(""):`<p>No tracked jobs yet.</p>`}</div>
-        </section>
       </div>
     </div>
   </section>
