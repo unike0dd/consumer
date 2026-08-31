@@ -1,8 +1,7 @@
 const dashboard={
   audience:"Workspace",
   greeting:"Hello, Gabriel.",
-  progress:[["Profile completeness",85],["Application follow-up",72],["Career checklist",68]],
-  rows:[["Operations Coordinator","Casa Verde Market","Interview","Tuesday"],["Customer Support Specialist","Norte Studio","Under review","Updated today"],["Virtual Assistant","Sol & Mar","Applied","Aug 20"],["HR Coordinator","Andina Collective","Saved","New match"]]
+  progress:[["Profile completeness",85],["Application follow-up",72],["Career checklist",68]]
 };
 
 document.title="Gabo Services | Workspace";
@@ -39,10 +38,6 @@ document.querySelector("#app").innerHTML=`
       <div class="grid">
         <div class="main-stack">
           <section class="panel"><div class="heading"><div><p class="eyebrow">At a glance</p><h2>Career progress</h2></div></div><div class="progress">${dashboard.progress.map(p=>`<div><p><span>${p[0]}</span><b>${p[1]}%</b></p><div><i style="width:${p[1]}%"></i></div></div>`).join("")}</div></section>
-          <section class="panel activity">
-            <div class="heading"><div><p class="eyebrow">Application activity</p><h2>Your opportunities</h2></div><span class="count">${dashboard.rows.length} items</span></div>
-            <div class="rows">${dashboard.rows.map(r=>`<article data-search="${r.join(" ").toLowerCase()}"><i>♡</i><div><strong>${r[0]}</strong><small>${r[1]}</small></div>${r[2]==="Interview"?`<a class="status-link" href="task/#interviews">${r[2]}</a>`:`<em>${r[2]}</em>`}<b>${r[3]}</b></article>`).join("")}<p class="empty" hidden>No matching activity.</p></div>
-          </section>
         </div>
         <aside class="right">
           <section class="panel task-center"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div></div><nav class="task-center-links" aria-label="Task center options">
@@ -69,7 +64,7 @@ const updateClock=()=>{const now=new Date();clock.dateTime=now.toISOString();clo
 updateClock();
 setInterval(updateClock,60000);
 
-const search=document.querySelector(".search"),searchToggle=document.querySelector(".search-toggle"),input=document.querySelector(".search input"),articles=[...document.querySelectorAll(".rows article")],empty=document.querySelector(".empty"),count=document.querySelector(".count");
+const search=document.querySelector(".search"),searchToggle=document.querySelector(".search-toggle"),input=document.querySelector(".search input"),taskCenterLinks=[...document.querySelectorAll(".task-center-links a")];
 const adjustableScreen=window.matchMedia("(max-width: 1023px)");
 function setSearchOpen(open){
   search.classList.toggle("search-open",open);
@@ -81,4 +76,4 @@ searchToggle.addEventListener("click",()=>{if(adjustableScreen.matches)setSearch
 document.addEventListener("click",event=>{if(adjustableScreen.matches&&!search.contains(event.target)&&search.classList.contains("search-open"))setSearchOpen(false)});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&search.classList.contains("search-open")){setSearchOpen(false);searchToggle.focus()}});
 adjustableScreen.addEventListener?.("change",event=>{if(!event.matches)setSearchOpen(false)});
-input.addEventListener("input",()=>{let shown=0;articles.forEach(row=>{const match=row.dataset.search.includes(input.value.toLowerCase());row.hidden=!match;if(match)shown++});empty.hidden=shown!==0;count.textContent=`${shown} items`});
+input.addEventListener("input",()=>{const query=input.value.trim().toLowerCase();taskCenterLinks.forEach(link=>{link.hidden=!link.textContent.toLowerCase().includes(query)})});

@@ -13,7 +13,7 @@ html{font-family:var(--gs-font);-webkit-text-size-adjust:100%;text-size-adjust:1
 body{min-width:0;overflow-x:hidden;font-family:var(--gs-font)}
 button,input,select,textarea{font-family:inherit}
 img,svg,canvas,video{max-width:100%;height:auto}
-.app,.shell,.workspace,.work,.content,.dashboard-grid,.grid,.right-stack,.right,.metrics,.panel,.welcome,.topbar,.top,.rows,.data-row,.profile-page,.profile-hero,.profile-metrics,.profile-grid{min-width:0}
+.app,.shell,.workspace,.work,.content,.dashboard-grid,.grid,.right-stack,.right,.metrics,.panel,.welcome,.topbar,.top,.data-row,.profile-page,.profile-hero,.profile-metrics,.profile-grid{min-width:0}
 
 /* PC and wide laptop */
 @media (min-width:1280px){
@@ -36,9 +36,9 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .panel{height:100%;padding:var(--gs-card-padding)}
   .panel-title h2,.heading h2{font-family:var(--gs-font);font-size:clamp(18px,1.4vw,24px);font-weight:600}
   .panel-title p,.heading p{font-size:13px}
-  .data-row,.rows article{min-height:82px;padding:17px 14px}
-  .row-main b,.rows article div strong{font-size:14px}
-  .row-main small,.rows article div small{font-size:12px}
+  .data-row{min-height:82px;padding:17px 14px}
+  .row-main b{font-size:14px}
+  .row-main small{font-size:12px}
   .task b,.tasks label{font-size:13px}
   .task small{font-size:11px}
   .profile-hero,.profile-metrics,.profile-grid{width:min(1600px,calc(100% - (2 * var(--gs-content-gutter))))}
@@ -110,12 +110,9 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .panel-title,.heading{align-items:flex-start;flex-wrap:wrap}
   .panel-title h2,.heading h2{font-family:var(--gs-font);font-size:20px;font-weight:600}
   .data-row{grid-template-columns:minmax(0,1fr);gap:8px;min-height:0;padding:16px 10px}
-  .rows article{grid-template-columns:38px minmax(0,1fr);align-items:start;gap:7px 11px;min-height:0;padding:16px 10px}
-  .rows article>i{grid-row:1 / span 3;grid-column:1;width:36px;height:36px}
-  .rows article>div,.rows article>b,.rows article>em,.rows article>.status-link{grid-column:2;min-width:0;justify-self:start;text-align:left}
-  .data-row>strong,.data-row>em,.data-row>.status,.rows article>b,.rows article>em{display:block;justify-self:start;text-align:left}
-  .row-main b,.rows article div strong{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:14px}
-  .row-main small,.rows article div small{font-size:12px}
+  .data-row>strong,.data-row>em,.data-row>.status{display:block;justify-self:start;text-align:left}
+  .row-main b{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;font-size:14px}
+  .row-main small{font-size:12px}
   .role-tabs{width:100%;max-width:100%;overflow-x:auto}
   .ui-preferences{position:static;margin-left:auto}
   .profile-header{padding-inline:18px}
@@ -151,9 +148,6 @@ img,svg,canvas,video{max-width:100%;height:auto}
   .heading h2{font-size:clamp(30px,2vw,40px)}
   .quick-actions{grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}
   .quick-actions a{display:grid;place-items:center;font-size:clamp(14px,.25vw + 11px,16px)}
-  .rows article{min-height:clamp(88px,6vw,104px)}
-  .rows article div strong{font-size:clamp(15px,.25vw + 12px,17px)}
-  .rows article div small,.rows article>b{font-size:clamp(12px,.2vw + 10px,15px)}
   .profile-page .profile-hero,.profile-page .profile-metrics,.profile-page .profile-grid{width:min(1500px,calc(100% - (2 * var(--gs-content-gutter))))}
   .profile-page .profile-hero>div:first-child{max-width:960px}
   .profile-page .profile-card{min-height:clamp(220px,15vw,260px);padding:clamp(28px,2.2vw,40px)}
