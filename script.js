@@ -42,7 +42,7 @@ document.querySelector("#app").innerHTML=`
         <aside class="right">
           <section class="panel task-center"><div class="heading"><div><p class="eyebrow">Task center</p><h2>Next steps</h2></div></div><nav class="task-center-links" aria-label="Task center options">
             <a href="task/#next-steps"><span><strong>Create a Task</strong></span><b>View tasks</b></a>
-            <a href="task/#next-steps"><span><small>Application activity</small><strong>Your opportunities</strong></span><b>View Applications</b></a>
+            <a href="task/#next-steps"><span><strong>Your opportunities</strong></span><b>View Applications</b></a>
             <a href="task/#next-steps"><span><strong>Saved Jobs</strong></span><b>View Jobs</b></a>
             <a href="task/#next-steps"><span><strong>Jobs Tracker</strong></span><b>View Trackers</b></a>
           </nav></section>
