@@ -1,0 +1,16 @@
+/* Shared language and theme controls */
+:root{color-scheme:light}
+.ui-preferences{display:flex;align-items:center;gap:8px;margin-left:auto;flex:0 0 auto}
+.ui-preference-button{min-width:46px;height:40px;padding:0 11px;border:1px solid var(--line,#d9d0c1);border-radius:10px;background:var(--paper,#fffdf8);color:var(--green,#153f36);font:800 11px/1 Arial,sans-serif;letter-spacing:.02em;cursor:pointer;box-shadow:0 3px 12px rgba(14,48,41,.08);transition:background .18s,color .18s,border-color .18s,transform .18s}
+.ui-preference-button:hover{border-color:var(--gold,#d6a13c);transform:translateY(-1px)}
+.ui-preference-button:focus-visible{outline:3px solid color-mix(in srgb,var(--gold,#d6a13c) 45%,transparent);outline-offset:2px}
+html[data-theme="dark"]{color-scheme:dark;--cream:#101916;--paper:#17231f;--sand:#26352f;--green:#d9eee5;--deep:#09120f;--blue:#73b4ce;--gold:#e2b553;--goldsoft:#493b20;--ink:#e7f0ec;--muted:#aabbb4;--line:#3b4b45;--accent:#8fc9b1;--soft:#263b33}
+html[data-theme="dark"] body,html[data-theme="dark"] .work,html[data-theme="dark"] .profile-page,html[data-theme="dark"] .task-page,html[data-theme="dark"] .documents-page,html[data-theme="dark"] .settings-page{background:var(--cream)!important;color:var(--ink)!important}
+html[data-theme="dark"] .top,html[data-theme="dark"] .profile-header,html[data-theme="dark"] .task-header,html[data-theme="dark"] .documents-header,html[data-theme="dark"] .settings-header{background:#121d19!important;border-color:var(--line)!important}
+html[data-theme="dark"] .panel,html[data-theme="dark"] article,html[data-theme="dark"] .task-card,html[data-theme="dark"] .jobs-subsection,html[data-theme="dark"] .order-panel,html[data-theme="dark"] .preview-column,html[data-theme="dark"] .settings-panel,html[data-theme="dark"] .profile-card,html[data-theme="dark"] dialog,html[data-theme="dark"] .job-dialog article{border-color:var(--line)!important}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea,html[data-theme="dark"] .search,html[data-theme="dark"] button:not(.nav):not(.primary-action):not(.pdf-action){color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .brand-dark,html[data-theme="dark"] .brand,html[data-theme="dark"] .back-link,html[data-theme="dark"] h1,html[data-theme="dark"] h2,html[data-theme="dark"] h3,html[data-theme="dark"] strong{color:var(--green)}
+html[data-theme="dark"] .pdf-sheet{background:#fffdf8!important;color:#24322e!important}
+html[data-theme="dark"] .pdf-sheet h1,html[data-theme="dark"] .pdf-sheet h2,html[data-theme="dark"] .pdf-sheet h3,html[data-theme="dark"] .pdf-sheet strong{color:#153f36!important}
+@media(max-width:720px){.ui-preferences{gap:6px}.ui-preference-button{min-width:42px;height:38px;padding:0 8px;font-size:10px}}
+@media print{.ui-preferences{display:none!important}}
