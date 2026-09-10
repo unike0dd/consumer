@@ -88,14 +88,14 @@
   drawer.className = 'wn-drawer';
   drawer.dataset.uiControl = '';
   drawer.innerHTML = `<header class="wn-drawer-head"><strong>Gabo Services</strong><button class="wn-close" type="button"><span aria-hidden="true">×</span></button></header>
-    <nav class="wn-navigation"><button class="wn-section wn-overview" type="button" data-wn-section="overview">${label('Overview')}</button>
+    <nav class="wn-navigation" hidden><button class="wn-section wn-overview" type="button" data-wn-section="overview">${label('Overview')}</button>
     ${sections.map(section => `<div class="wn-group"><button class="wn-section" type="button" data-wn-section="${section.id}" aria-expanded="false" aria-controls="wn-sub-${section.id}">${label(section.label)}<span class="wn-chevron" aria-hidden="true"></span></button><div class="wn-submenu" id="wn-sub-${section.id}" hidden>${section.tabs.map(tab => `<button class="wn-subitem" type="button" data-wn-section="${section.id}" data-wn-tab="${tab[0]}">${label(tab[2])}</button>`).join('')}</div></div>`).join('')}</nav>
-    <details class="wn-more"><summary>${label('More')}</summary><div class="wn-legacy"></div></details>`;
+    <div class="wn-more"><div class="wn-legacy"></div></div>`;
   const legacy = drawer.querySelector('.wn-legacy');
   if (oldNav) legacy.append(oldNav);
   if (oldFooter) legacy.append(oldFooter);
   if (!oldNav && home.pathname.includes('/consumer/')) {
-    [['profile/', 'My Profile'], ['task/', 'Tasks'], ['documents/', 'Documents'], ['settings/', 'Settings']].forEach(([path, name]) => {
+    [['profile/', 'My Profile'], ['task/', 'Tasks'], ['documents/', 'Documents'], ['settings/', 'Settings'], ['#logout', 'Log out']].forEach(([path, name]) => {
       const a = document.createElement('a'); a.href = new URL(path, home); a.innerHTML = label(name); legacy.append(a);
     });
   }
