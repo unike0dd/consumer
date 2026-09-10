@@ -95,7 +95,7 @@
   if (oldNav) legacy.append(oldNav);
   if (oldFooter) legacy.append(oldFooter);
   if (!oldNav && home.pathname.includes('/consumer/')) {
-    [['profile/', 'My Profile'], ['task/', 'Tasks'], ['documents/', 'Documents'], ['settings/', 'Settings'], ['#logout', 'Log out']].forEach(([path, name]) => {
+    [['profile/', 'My Profile'], ['task/', 'Task'], ['documents/', 'Documents'], ['settings/', 'Settings'], ['https://unike0dd.github.io/duplicate-hrservices/auth.html?dashboard=consumer&mode=signin', 'Log out']].forEach(([path, name]) => {
       const a = document.createElement('a'); a.href = new URL(path, home); a.innerHTML = label(name); legacy.append(a);
     });
   }
