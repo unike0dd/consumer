@@ -14,3 +14,80 @@ html[data-theme="dark"] .pdf-sheet{background:#fffdf8!important;color:#24322e!im
 html[data-theme="dark"] .pdf-sheet h1,html[data-theme="dark"] .pdf-sheet h2,html[data-theme="dark"] .pdf-sheet h3,html[data-theme="dark"] .pdf-sheet strong{color:#153f36!important}
 @media(max-width:720px){.ui-preferences{gap:6px}.ui-preference-button{min-width:42px;height:38px;padding:0 8px;font-size:10px}}
 @media print{.ui-preferences{display:none!important}}
+
+
+/* Refined dark-mode contrast: application surfaces stay dark; print documents stay light */
+html[data-theme="dark"]{
+  --cream:#0f1814;
+  --paper:#1a2822;
+  --sand:#293930;
+  --green:#e7f4ed;
+  --deep:#09120f;
+  --blue:#89c9e0;
+  --gold:#e6ba5b;
+  --goldsoft:#493b20;
+  --ink:#f2f7f4;
+  --muted:#bdcbc4;
+  --line:#52645b;
+  --accent:#8fd0ae;
+  --soft:#294137;
+}
+html[data-theme="dark"] :is(.top,.profile-header,.task-header,.documents-header,.settings-header){
+  background:#14201b!important;
+  color:var(--ink)!important;
+  border-color:var(--line)!important;
+}
+html[data-theme="dark"] :is(.panel,.metrics article,.profile-metrics article,.profile-card,.profile-dialog,.identity-dialog,.profile-entry,.dialog-footer,.task-card,.section-toggle,.jobs-subsection,.next-step,.job-list>article,.saved-job,.tracker-list li,.interview-list article,.job-dialog,.create-task-dialog,.dialog-header,.application-panel,.settings-panel,.settings-actions,.contact-visibility,.order-panel,.order-panel li,.resume-upload-panel,.uploaded-resume,.empty-document){
+  background:var(--paper)!important;
+  color:var(--ink)!important;
+  border-color:var(--line)!important;
+}
+html[data-theme="dark"] :is(.search,.range,.task-center-links>a,.secondary-action,.drag-handle,.job-actions button,.dialog-actions button,.remove-saved,.create-task-actions button,.upload-action,.uploaded-resume-actions button,input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),select,textarea){
+  background:#22332b!important;
+  color:var(--ink)!important;
+  border-color:#61766b!important;
+}
+html[data-theme="dark"] :is(h1,h2,h3,h4,strong,.brand,.brand-dark,.back-link,.profile-card>strong,.resume-upload-panel h2,.order-panel h2){
+  color:#f2f7f4!important;
+}
+html[data-theme="dark"] :is(p,small,.profile-summary,.visibility-intro,.resume-upload-panel>p,.upload-storage-note){
+  color:var(--muted);
+}
+html[data-theme="dark"] :is(input,select,textarea)::placeholder{color:#9eafa7;opacity:1}
+html[data-theme="dark"] :is(input,select,textarea):focus{
+  outline:3px solid rgba(137,201,224,.25);
+  border-color:#89c9e0!important;
+}
+html[data-theme="dark"] :is(.primary-action,.pdf-action,.resume-upload-action,.create-task-button){
+  background:#276d57!important;
+  color:#fff!important;
+  border-color:#65ad91!important;
+}
+html[data-theme="dark"] :is(.primary-action,.pdf-action,.resume-upload-action,.create-task-button):hover{
+  background:#32856b!important;
+  color:#fff!important;
+}
+html[data-theme="dark"] .danger-action,
+html[data-theme="dark"] .uploaded-resume-actions button{background:#3c2723!important;color:#ffc8bd!important;border-color:#8b5d54!important}
+html[data-theme="dark"] .switch{background:#3d5047;border:1px solid #71857b}
+html[data-theme="dark"] input:checked+.switch{background:#3d8c70}
+html[data-theme="dark"] .ui-preference-button{background:#24372f;color:#f7fbf9;border-color:#71867b;box-shadow:0 3px 12px rgba(0,0,0,.32)}
+html[data-theme="dark"] .ui-preference-button:hover{background:#304a3e;border-color:#a0cdb8}
+html[data-theme="dark"] .pdf-sheet{
+  --paper:#fffdf8;
+  --cream:#fbf8f1;
+  --green:#153f36;
+  --ink:#24322e;
+  --muted:#60706a;
+  --line:#ddd3c4;
+  --blue:#245f78;
+  --gold:#b77b12;
+  background:#fffdf8!important;
+  color:#24322e!important;
+}
+html[data-theme="dark"] .pdf-sheet :is(h1,h2,h3,h4,strong,p,small,span,li){color:inherit}
+html[data-theme="dark"] .pdf-sheet :is(h1,h2,h3,h4){color:#153f36!important}
+html[data-theme="dark"] .pdf-sheet .eyebrow{color:#9b6200!important}
+@media(prefers-contrast:more){
+  html[data-theme="dark"]{--ink:#fff;--muted:#d8e2dd;--line:#71847b}
+}
