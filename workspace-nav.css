@@ -3,13 +3,41 @@ html[data-theme="dark"] .wn-enabled{--wn-ink:#eef5ed;--wn-muted:#b8c9be;--wn-lin
 .wn-enabled .wn-retired-sidebar,.wn-enabled .wn-retired-toggle,.wn-enabled .sidebar-backdrop,.wn-enabled #menuBackdrop{display:none!important}
 .wn-enabled .wn-original-root{display:block!important;grid-template-columns:minmax(0,1fr)!important;transition:margin-left .24s ease;min-width:0}
 .wn-enabled .wn-original-root>.workspace,.wn-enabled .wn-original-root>.work{width:100%;min-width:0}
-.wn-enabled .topbar,.wn-enabled .top{padding-left:80px!important;min-height:76px}
-.wn-enabled .profile-header,.wn-enabled .task-header,.wn-enabled .settings-header,.wn-enabled .documents-header{padding-left:64px}
+.wn-enabled .gs-main-nav{box-sizing:border-box;display:flex;align-items:center;gap:18px;width:100%;min-height:76px;padding:10px clamp(18px,3vw,44px) 10px 78px;border-bottom:1px solid var(--wn-line);background:var(--wn-canvas);color:var(--wn-ink)}
+.wn-enabled .gs-nav-brand{flex:none;color:var(--wn-ink);font:clamp(22px,2vw,28px)/1.1 Georgia,serif;text-decoration:none;white-space:nowrap}
+.wn-enabled .gs-nav-search,.wn-enabled .gs-main-nav>.search{display:flex;align-items:center;gap:8px;width:min(480px,38vw);min-width:180px;margin:0;padding:0 12px;border:1px solid var(--wn-line);border-radius:12px;background:var(--wn-paper);color:var(--wn-ink)}
+.wn-enabled .gs-nav-search svg{width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.wn-enabled .gs-nav-search input{width:100%;height:46px;border:0;outline:0;background:transparent;color:inherit;font:14px Arial,sans-serif}
+.wn-enabled .gs-nav-links{display:flex;align-items:center;gap:20px;margin-left:auto;order:3;white-space:nowrap}
+.wn-enabled .gs-nav-links a{color:var(--wn-accent);font:800 16px/1.2 Arial,sans-serif;text-decoration:none}
+.wn-enabled .gs-nav-links a:hover{text-decoration:underline;text-underline-offset:4px}
+.wn-enabled .gs-main-nav>.ui-preferences{order:2;margin-left:auto}
+.wn-enabled .gs-main-nav>.ui-preferences+.gs-nav-links{margin-left:0}
 .wn-enabled .wn-hamburger{position:fixed;z-index:4100;top:16px;left:18px;width:44px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px;border:1px solid var(--wn-line);border-radius:12px;background:var(--wn-paper);color:var(--wn-ink);box-shadow:0 3px 12px #1224190d;cursor:pointer}
 .wn-hamburger span{display:block;width:22px;height:2px;background:currentColor;border-radius:1px}
 .wn-enabled.wn-menu-open .wn-hamburger{visibility:hidden}
 .wn-enabled .wn-drawer{box-sizing:border-box;position:fixed;z-index:4300;inset:0 auto 0 0;width:var(--wn-width);max-width:calc(100vw - 24px);height:100dvh;display:flex;flex-direction:column;gap:20px;padding:22px 14px;overflow:auto;overscroll-behavior:contain;background:var(--wn-paper);color:var(--wn-ink);border-right:1px solid var(--wn-line);box-shadow:8px 0 28px #14291b0a;transform:translateX(-105%);visibility:hidden;transition:transform .24s ease,visibility .24s;font-family:inherit;font-size:1rem;line-height:1.5}
 .wn-enabled.wn-menu-open .wn-drawer{transform:translateX(0);visibility:visible}
+
+@media(max-width:900px){
+  .wn-enabled .gs-main-nav{gap:10px;padding-left:72px}
+  .wn-enabled .gs-nav-brand{font-size:21px}
+  .wn-enabled .gs-nav-search,.wn-enabled .gs-main-nav>.search{width:min(300px,32vw);min-width:46px}
+  .wn-enabled .gs-nav-links{gap:11px}
+  .wn-enabled .gs-nav-links a{font-size:14px}
+}
+@media(max-width:680px){
+  .wn-enabled .gs-main-nav{flex-wrap:wrap;padding:10px 10px 10px 66px}
+  .wn-enabled .gs-nav-brand{margin-right:auto}
+  .wn-enabled .gs-main-nav>.ui-preferences{margin-left:0}
+  .wn-enabled .gs-nav-links{margin-left:0}
+  .wn-enabled .gs-nav-search,.wn-enabled .gs-main-nav>.search{order:4;width:100%;min-width:100%;margin-left:-56px}
+}
+@media(max-width:460px){
+  .wn-enabled .gs-nav-brand{font-size:18px}
+  .wn-enabled .gs-nav-links{width:100%;justify-content:flex-end}
+  .wn-enabled .gs-main-nav>.ui-preferences{margin-left:auto}
+}
 .wn-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 6px 16px;border-bottom:1px solid var(--wn-line)}
 .wn-drawer-head strong{font-size:1.125rem;color:var(--wn-ink)}
 .wn-enabled .wn-close{width:40px;height:40px;flex:none;padding:0;border:1px solid var(--wn-line);border-radius:10px;background:var(--wn-paper);color:var(--wn-ink);font-size:1.6rem;cursor:pointer}
