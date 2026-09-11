@@ -73,20 +73,18 @@
   document.body.classList.add('wn-enabled');
 
   const currentHeader = document.querySelector('.top, .profile-header, .task-header, .documents-header, .settings-header');
-  const currentSearch = currentHeader?.querySelector('.search');
   const sharedHeader = document.createElement('header');
   sharedHeader.className = 'gs-main-nav';
   sharedHeader.setAttribute('aria-label', 'Main navigation');
   sharedHeader.innerHTML = `<a class="gs-nav-brand" href="${home.href}">Gabo Services</a>
     <div class="gs-nav-search" role="search">
       <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
-      <input type="search" aria-label="Search this dashboard" placeholder="Search this dashboard">
+      <input id="dashboard-search" type="search" aria-label="Search this dashboard" placeholder="Search this dashboard">
     </div>
     <div class="gs-nav-links">
       <a href="${new URL('profile/', home)}">Profile</a>
       <a href="${home.href}">Workspace</a>
     </div>`;
-  if (currentSearch) sharedHeader.querySelector('.gs-nav-search').replaceWith(currentSearch);
   if (currentHeader) currentHeader.replaceWith(sharedHeader);
   else originalRoot.prepend(sharedHeader);
 
